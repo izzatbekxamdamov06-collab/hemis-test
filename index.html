@@ -2,772 +2,344 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HEMIS – Test Topshirish</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>HEMIS Test</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --blue: #1565C0;
-    --blue-dark: #0D47A1;
-    --blue-light: #1976D2;
-    --blue-bg: #E3F2FD;
-    --green: #2E7D32;
-    --green-bg: #E8F5E9;
-    --red: #C62828;
-    --red-bg: #FFEBEE;
-    --grey: #546E7A;
-    --grey-light: #ECEFF1;
-    --grey-border: #CFD8DC;
-    --text: #212121;
-    --text-secondary: #546E7A;
-    --sidebar-w: 260px;
-    --header-h: 56px;
-  }
-
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: #F5F7FA;
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* ===== HEADER ===== */
-  .header {
-    position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
-    background: var(--blue-dark);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 16px;
-    z-index: 100;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  }
-  .header-left { display: flex; align-items: center; gap: 12px; }
-  .header-logo {
-    background: white;
-    color: var(--blue-dark);
-    font-weight: 700;
-    font-size: 13px;
-    padding: 4px 10px;
-    border-radius: 3px;
-    letter-spacing: 0.5px;
-  }
-  .header-title { color: white; font-size: 14px; font-weight: 500; opacity: 0.9; }
-  .header-right { display: flex; align-items: center; gap: 16px; }
-  .timer-box {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 4px;
-    padding: 4px 12px;
-    color: white;
-    font-size: 15px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 1px;
-    min-width: 70px;
-    text-align: center;
-  }
-  .timer-box.warning { background: rgba(255,152,0,0.3); border-color: #FF9800; color: #FFE082; }
-  .timer-box.danger  { background: rgba(198,40,40,0.3);  border-color: #EF5350; color: #FFCDD2; animation: blink 1s infinite; }
-  @keyframes blink { 50% { opacity: 0.5; } }
-  .user-info { display: flex; align-items: center; gap: 8px; color: white; }
-  .user-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255,255,255,0.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: white;
-  }
-  .user-name { font-size: 13px; opacity: 0.9; }
-
-  /* ===== NAV TABS ===== */
-  .nav-tabs {
-    position: fixed; top: var(--header-h); left: 0; right: 0;
-    background: var(--blue);
-    display: flex; align-items: center;
-    padding: 0 8px;
-    z-index: 99;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-  .nav-tab {
-    padding: 10px 18px;
-    color: rgba(255,255,255,0.75);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-    user-select: none;
-  }
-  .nav-tab:hover { color: white; background: rgba(255,255,255,0.08); }
-  .nav-tab.active { color: white; border-bottom-color: #FFD600; }
-
-  /* ===== LAYOUT ===== */
-  .layout {
-    display: flex;
-    margin-top: calc(var(--header-h) + 40px);
-    min-height: calc(100vh - var(--header-h) - 40px);
-  }
-
-  /* ===== SIDEBAR ===== */
-  .sidebar {
-    width: var(--sidebar-w);
-    background: white;
-    border-right: 1px solid var(--grey-border);
-    position: fixed;
-    top: calc(var(--header-h) + 40px);
-    left: 0;
-    bottom: 0;
-    overflow-y: auto;
-    padding: 12px;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-
-  .sidebar-title {
-    font-size: 11px; font-weight: 700; color: var(--text-secondary);
-    text-transform: uppercase; letter-spacing: 0.8px;
-    padding: 4px 0 8px;
-    border-bottom: 1px solid var(--grey-border);
-    margin-bottom: 4px;
-  }
-  .sidebar-stats {
-    background: var(--blue-bg);
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 4px;
-  }
-  .stat-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
-  .stat-row:last-child { margin-bottom: 0; }
-  .stat-label { color: var(--text-secondary); }
-  .stat-value { font-weight: 700; color: var(--blue-dark); }
-
-  .q-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-  }
-  .q-btn {
-    aspect-ratio: 1;
-    border: 1.5px solid var(--grey-border);
-    border-radius: 4px;
-    background: white;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .q-btn:hover { border-color: var(--blue-light); color: var(--blue); background: var(--blue-bg); }
-  .q-btn.answered { background: var(--blue-light); border-color: var(--blue-light); color: white; }
-  .q-btn.current  { background: var(--blue-dark); border-color: var(--blue-dark); color: white; box-shadow: 0 0 0 2px #64B5F6; }
-
-  /* ===== MAIN ===== */
-  .main {
-    margin-left: var(--sidebar-w);
-    flex: 1;
-    padding: 20px 24px;
-    max-width: 860px;
-  }
-
-  .exam-info-bar {
-    background: white;
-    border: 1px solid var(--grey-border);
-    border-radius: 6px;
-    padding: 10px 16px;
-    margin-bottom: 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  .exam-info-bar strong { color: var(--text); }
-
-  /* ===== QUESTION CARD ===== */
-  .q-card {
-    background: white;
-    border: 1px solid var(--grey-border);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .q-card-header {
-    background: var(--blue-dark);
-    color: white;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .q-badge {
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px;
-    padding: 1px 7px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-  }
-  .q-body { padding: 16px; }
-  .q-text {
-    font-size: 15.5px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.6;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--grey-light);
-  }
-  .options { display: flex; flex-direction: column; gap: 8px; }
-  .option {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 10px 12px;
-    border: 1.5px solid var(--grey-border);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: white;
-  }
-  .option:hover { border-color: var(--blue-light); background: var(--blue-bg); }
-  .option.selected { border-color: var(--blue); background: var(--blue-bg); }
-  .option.selected .opt-letter { background: var(--blue); color: white; }
-  .opt-letter {
-    min-width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--grey-light);
-    color: var(--text-secondary);
-    font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .opt-text {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: var(--text);
-  }
-
-  /* ===== NAV BUTTONS ===== */
-  .q-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px;
-    border-top: 1px solid var(--grey-border);
-    background: #FAFAFA;
-  }
-  .btn {
-    padding: 7px 18px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-    font-family: 'Roboto', sans-serif;
-  }
-  .btn-outline {
-    background: white;
-    border: 1.5px solid var(--grey-border);
-    color: var(--text-secondary);
-  }
-  .btn-outline:hover { border-color: var(--blue-light); color: var(--blue); }
-  .btn-outline:disabled { opacity: 0.4; cursor: default; }
-  .btn-primary { background: var(--blue-dark); color: white; }
-  .btn-primary:hover { background: var(--blue-light); }
-  .btn-danger { background: var(--red); color: white; }
-  .btn-danger:hover { background: #B71C1C; }
-
-  /* ===== SUBMIT PANEL ===== */
-  .submit-panel {
-    background: white;
-    border: 1px solid var(--grey-border);
-    border-radius: 6px;
-    padding: 16px;
-    display: flex; justify-content: flex-end; gap: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-
-  /* ===== RESULT PAGE ===== */
-  .result-page { display: none; }
-  .result-card {
-    background: white;
-    border: 1px solid var(--grey-border);
-    border-radius: 8px;
-    overflow: hidden;
-    max-width: 680px;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .result-header {
-    background: var(--blue-dark);
-    color: white;
-    padding: 20px 24px;
-    text-align: center;
-  }
-  .result-header h2 { font-size: 18px; margin-bottom: 4px; }
-  .result-header p { font-size: 13px; opacity: 0.8; }
-  .result-score-circle {
-    width: 120px; height: 120px; border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    border: 4px solid rgba(255,255,255,0.5);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    margin: 20px auto;
-  }
-  .score-num { font-size: 36px; font-weight: 700; line-height: 1; }
-  .score-label { font-size: 11px; opacity: 0.7; margin-top: 2px; }
-  .result-body { padding: 20px 24px; }
-  .result-stats {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px; margin-bottom: 20px;
-  }
-  .rs-item {
-    background: var(--grey-light);
-    border-radius: 6px;
-    padding: 12px;
-    text-align: center;
-  }
-  .rs-val { font-size: 22px; font-weight: 700; color: var(--blue-dark); }
-  .rs-lab { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-  .result-actions { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
-
-  /* ===== ANSWERS PAGE (hidden) ===== */
-  .answers-page { display: none; }
-
-  /* ===== MODAL ===== */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: none; align-items: center; justify-content: center;
-    z-index: 200;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal {
-    background: white;
-    border-radius: 8px;
-    padding: 24px;
-    max-width: 400px; width: 90%;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  }
-  .modal h3 { font-size: 16px; margin-bottom: 8px; color: var(--text); }
-  .modal p  { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
-  .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
-
-  /* ===== SCROLLBAR ===== */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--grey-border); border-radius: 3px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#111;font-size:16px}
+.topbar{background:#1565C0;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:48px;position:sticky;top:0;z-index:200}
+.logo{background:white;color:#1565C0;font-weight:800;font-size:13px;padding:3px 8px;border-radius:3px}
+.tleft{display:flex;align-items:center;gap:10px}
+.ttitle{font-size:14px;font-weight:500;opacity:.9}
+.timerbar{background:#1976D2;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;position:sticky;top:48px;z-index:199}
+.tnum{font-size:24px;font-weight:700;color:white;letter-spacing:2px;font-variant-numeric:tabular-nums}
+.ticons{display:flex;gap:18px}
+.tico{background:none;border:none;color:white;font-size:22px;cursor:pointer;opacity:.85;padding:2px;line-height:1}
+.timerbar.warn{background:#E65100}
+.timerbar.danger{background:#B71C1C}
+.sbar{height:4px;background:#ddd;position:sticky;top:96px;z-index:198}
+.sfill{height:4px;background:#F9A825;width:0%;transition:width .08s linear}
+.tabs{background:white;border-bottom:1px solid #e0e0e0;display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:100px;z-index:197}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:11px 14px;font-size:13px;font-weight:600;color:#78909C;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;flex-shrink:0;user-select:none}
+.tab:hover{color:#1565C0}
+.tab.active{color:#1565C0;border-bottom-color:#1565C0}
+.atab.active{color:#2E7D32;border-bottom-color:#2E7D32}
+.atab{color:#388E3C}
+.content{max-width:700px;margin:0 auto;padding:10px 10px 80px}
+.qblock{background:white;border-radius:8px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.qtext{padding:16px 16px 14px;font-size:16px;font-weight:500;line-height:1.55;color:#111;border-bottom:1px solid #f0f0f0}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #f5f5f5;transition:background .1s;-webkit-tap-highlight-color:transparent}
+.opt:last-child{border-bottom:none}
+.opt.sel{background:#FFF8E1}
+.radio{width:22px;height:22px;border:2px solid #bdbdbd;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:border-color .15s}
+.rdot{width:10px;height:10px;border-radius:50%;background:transparent;transform:scale(0);transition:all .15s}
+.opt.sel .radio{border-color:#1565C0}
+.opt.sel .rdot{background:#1565C0;transform:scale(1)}
+.otxt{font-size:15.5px;line-height:1.5;color:#222}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e0e0e0;padding:8px 14px;z-index:200}
+.bend{width:100%;padding:12px;background:#C62828;color:white;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.sbox{background:white;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.sinp{flex:1;border:1.5px solid #e0e0e0;border-radius:6px;padding:8px 11px;font-size:15px;font-family:inherit;outline:none;color:#1a1a1a}
+.sinp:focus{border-color:#1565C0}
+.scnt{font-size:12px;color:#999;white-space:nowrap}
+.aitm{background:white;border-radius:8px;margin-bottom:7px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.aq{padding:11px 13px;font-size:14px;font-weight:600;color:#1565C0;line-height:1.4;border-bottom:1px solid #f0f0f0}
+.aa{padding:9px 13px;background:#E8F5E9;border-left:4px solid #43A047;display:flex;align-items:flex-start;gap:7px}
+.achk{color:#43A047;font-size:16px;flex-shrink:0;margin-top:1px}
+.atxt{font-size:14px;color:#1a1a1a;line-height:1.45}
+.rwrap{display:flex;align-items:center;justify-content:center;min-height:60vh;padding:16px}
+.rcard{background:white;border-radius:12px;overflow:hidden;width:100%;max-width:380px;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.rhead{background:#1565C0;color:white;text-align:center;padding:28px 20px}
+.rcirc{width:108px;height:108px;border-radius:50%;border:4px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
+.rpct{font-size:34px;font-weight:800;line-height:1}
+.rlbl{font-size:12px;opacity:.7}
+.rbody{padding:18px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.ri{background:#f5f7fa;border-radius:8px;padding:12px 6px;text-align:center}
+.riv{font-size:24px;font-weight:700}
+.ril{font-size:11px;color:#888;margin-top:2px}
+.rbtns{display:flex;flex-direction:column;gap:8px}
+.rbtn{width:100%;padding:11px;border-radius:6px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:300;padding:16px}
+.overlay.show{display:flex}
+.modal{background:white;border-radius:10px;padding:22px;width:100%;max-width:320px}
+.modal h3{font-size:16px;margin-bottom:8px}
+.modal p{font-size:14px;color:#555;line-height:1.5;margin-bottom:18px}
+.mbtns{display:flex;gap:8px}
+.mbtn{flex:1;padding:10px;border-radius:6px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-  <div class="header-left">
-    <div class="header-logo">HEMIS</div>
-    <div class="header-title">Imtihon tizimi</div>
+<div class="topbar">
+  <div class="tleft">
+    <div class="logo">HEMIS</div>
+    <span class="ttitle">Moliya &ndash; Test</span>
   </div>
-  <div class="header-right">
-    <div class="timer-box" id="timerDisplay">90:00</div>
-    <div class="user-info">
-      <div class="user-avatar">T</div>
-      <div class="user-name">Talaba</div>
-    </div>
-  </div>
-</header>
-
-<!-- NAV TABS -->
-<nav class="nav-tabs">
-  <div class="nav-tab active" onclick="showSection('test')">📝 Imtihon</div>
-  <div class="nav-tab" onclick="showSection('answers')" id="answersTab">📋 Javoblar</div>
-</nav>
-
-<!-- LAYOUT -->
-<div class="layout" id="testSection">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-title">Savollar paneli</div>
-    <div class="sidebar-stats">
-      <div class="stat-row">
-        <span class="stat-label">Jami:</span>
-        <span class="stat-value" id="statTotal">0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Javob berildi:</span>
-        <span class="stat-value" id="statAnswered">0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Qolgan:</span>
-        <span class="stat-value" id="statRemaining">0</span>
-      </div>
-    </div>
-    <div class="q-grid" id="qGrid"></div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="exam-info-bar">
-      <span><strong>Fan:</strong> Moliya</span>
-      <span><strong>Savollar soni:</strong> <span id="totalQCount">0</span> ta</span>
-      <span><strong>Holat:</strong> <span style="color:var(--green); font-weight:600;">Davom etmoqda</span></span>
-    </div>
-
-    <!-- Test page -->
-    <div id="testPage">
-      <div class="q-card" id="questionCard">
-        <div class="q-card-header">
-          <span id="qHeaderNum">Savol 1</span>
-          <span class="q-badge" id="qBadge">1 / 146</span>
-        </div>
-        <div class="q-body">
-          <div class="q-text" id="qText"></div>
-          <div class="options" id="optionsDiv"></div>
-        </div>
-        <div class="q-nav">
-          <button class="btn btn-outline" id="btnPrev" onclick="navigate(-1)">← Oldingi</button>
-          <button class="btn btn-outline" onclick="clearAnswer()">Tozalash</button>
-          <button class="btn btn-primary" id="btnNext" onclick="navigate(1)">Keyingi →</button>
-        </div>
-      </div>
-      <div class="submit-panel">
-        <button class="btn btn-outline" onclick="openModal()">📊 Natijani ko'rish</button>
-        <button class="btn btn-danger" onclick="openModal()">✅ Testni yakunlash</button>
-      </div>
-    </div>
-
-    <!-- Result page -->
-    <div class="result-page" id="resultPage">
-      <div class="result-card">
-        <div class="result-header">
-          <h2>Test yakunlandi</h2>
-          <p>Moliya fani bo'yicha test natijalari</p>
-          <div class="result-score-circle">
-            <div class="score-num" id="scoreNum">0</div>
-            <div class="score-label">ball</div>
-          </div>
-        </div>
-        <div class="result-body">
-          <div class="result-stats">
-            <div class="rs-item">
-              <div class="rs-val" id="resCorrect" style="color:var(--green)">0</div>
-              <div class="rs-lab">To'g'ri javob</div>
-            </div>
-            <div class="rs-item">
-              <div class="rs-val" id="resWrong" style="color:var(--red)">0</div>
-              <div class="rs-lab">Noto'g'ri javob</div>
-            </div>
-            <div class="rs-item">
-              <div class="rs-val" id="resSkipped" style="color:var(--grey)">0</div>
-              <div class="rs-lab">Javob berilmadi</div>
-            </div>
-          </div>
-          <div class="result-actions">
-            <button class="btn btn-outline" onclick="restartTest()">🔄 Qayta boshlash</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+  <span style="font-size:13px;opacity:.8">Talaba</span>
 </div>
 
-<!-- ANSWERS SECTION -->
-<div style="display:none" id="answersSection">
-  <div style="margin-left:var(--sidebar-w); padding:20px 24px; margin-top:calc(var(--header-h)+40px); max-width:860px">
-    <div style="background:white;border:1px solid var(--grey-border);border-radius:6px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
-      <span style="font-size:13px;color:var(--text-secondary);white-space:nowrap">🔍 Qidirish:</span>
-      <input id="searchInput" type="text" placeholder="Savol yoki javob bo'yicha qidiring..." oninput="filterAnswers()" style="flex:1;border:1.5px solid var(--grey-border);border-radius:4px;padding:6px 10px;font-size:13px;font-family:Roboto,sans-serif;outline:none;color:var(--text)">
-      <span id="searchCount" style="font-size:12px;color:var(--text-secondary);white-space:nowrap"></span>
-    </div>
-    <div id="answersContent"></div>
+<div class="timerbar" id="timerbar">
+  <div class="tnum" id="tnum">90:00</div>
+  <div class="ticons">
+    <button class="tico" id="btnX">&#10005;</button>
+    <button class="tico">&#9872;</button>
   </div>
 </div>
 
-<!-- CONFIRM MODAL -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="sbar"><div class="sfill" id="sfill"></div></div>
+<div class="tabs" id="tabs"></div>
+<div class="content" id="content"></div>
+
+<div class="bottom" id="bottom">
+  <button class="bend" id="btnEnd">Testni yakunlash</button>
+</div>
+
+<div class="overlay" id="overlay">
   <div class="modal">
-    <h3>Testni yakunlashni tasdiqlang</h3>
-    <p id="modalMsg">Hali <strong id="unansweredCount">0</strong> ta savolga javob bermagansiz. Testni yakunlamoqchimisiz?</p>
-    <div class="modal-btns">
-      <button class="btn btn-outline" onclick="closeModal()">Bekor qilish</button>
-      <button class="btn btn-danger" onclick="submitTest()">Ha, yakunlash</button>
+    <h3>Testni yakunlash</h3>
+    <p id="mmsg">Yakunlamoqchimisiz?</p>
+    <div class="mbtns">
+      <button class="mbtn" style="background:#f0f0f0;color:#555" id="btnNo">Bekor</button>
+      <button class="mbtn" style="background:#C62828;color:white" id="btnYes">Yakunlash</button>
     </div>
   </div>
 </div>
 
 <script>
-const QUESTIONS = [{"q": "Quyidagilardan qaysi biri moliyaning obyekti hisoblanmaydi?", "o": ["Qimmatli qog’ozlar", "Markazlashgan pul fondlari", "Markazlashmagan pul fondlari", "Moliyaviy resurslar"], "a": 0}, {"q": "Moliyaning subyektlari to’liq keltirilgan javobni ko’rsating.", "o": ["Korxonalar, tashkilotlar, firmalar, turli xoʻjaliklar, moliyaviy vositachilar, xonadonlar, davlat idoralari", "korxonalar,turli xoʻjaliklar, moliyaviy vositachilar, xonadonlar,davlat idoralari", "turli xoʻjaliklar, moliyaviy vositachilar, xonadonlar,davlat idoralari", "korxonalar (firmalar), turli xoʻjaliklar, qimmqtli qog’ozlar, moliyaviy vositachilar, xonadonlar, davlat idoralari,"], "a": 0}, {"q": "Moliya quyidagilar o’rtasida vujudga keladigan pul munosabatlarini ifodalaydi:", "o": ["byudjet tizimiga soliqlarni to’lash va xarajatlarni byudjetdan moliyalashtirish davomida korxona va davlat o’rtasida", "markazlashtirilgan pul mablag’lari fondlaridan foydalanish jarayonida korxonalar o’rtasida", "korxonalar va fuqarolar o’rtasida byudjet mablag’larini shakllantirish jarayonida", "qiymatning tovar shaklidagi harakatiga bog’liq bo’lmasdan, aksincha, real pullarning harakatiga"], "a": 0}, {"q": "Siyosat davlat faoliyatining...", "o": ["barcha yo’nalishlarini qamrab oladi", "ayrim yo’nalishlarini qamrab oladi", "ayrim yo’nalishlarini qamrab olmaydi", "faqat siyosiy yo’nalishlarini qamrab oladi"], "a": 0}, {"q": "Quyidagilarni qaysi biri byudjet siyosatiga taaluqli emas?", "o": ["pul fondlari va daromadlarni shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "byudjet xarajatlar qismining tarkibiy tuzilishi, turli darajadagi byudjetlar o‘rtasida xarajatlarni taqsimlash orqali ifodalanadi", "davlat qarzini boshqarish, byudjet defitsitini qoplash yo‘llarini aniqlash orqali ifodalanadi", "byudjetda konsentratsiya qilinadigan (to‘planadigan) YaIM hissasini aniqlash, mamlakat yuqori va quyi organlarining o‘zaro munosabatlari orqali ifodalanadi"], "a": 0}, {"q": "Soliq siyosatining asosiy vazifasi nimalardan iborat?", "o": ["Soliq yukini kamaytirish", "Soliqlarni byudjetdagi ulushini ko‘paytirish", "Soliq imtiyozlarini joriy etish", "Soliq turlarini ko‘paytirish"], "a": 0}, {"q": "Mamlakat iqtisodiyotidagi soliq yuki qanday aniqlanadi?", "o": ["Moliya yilidagi soliqlar miqdorini mamlakat YaIM miqdoriga nisbati orqali", "Moliya yilidagi byudjet daromadlarini mamlakatdagi soliqlar miqdoriga nisbati orqali", "Mamlakatda yaratilgan mahsulotlar hajmini davlat byudjeti daromadlariga nisbati", "Soliq stavkalarini hisobga olgan holda"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaviy siyosatning tarkibiy qismiga kirmaydi?", "o": ["inflyatsion siyosat", "kredit siyosati", "sotsial moliyaviy siyosat", "byudjet-soliq siyosati"], "a": 0}, {"q": "Kredit siyosati natijasida kreditning arzonlashuvi nimalarga olib keladi?", "o": ["Takror ishlab chiqarish jarayoni subyektlari daromadlarining oshishiga", "Iqtisodiyotni izdan chiqishiga", "Byudjet daromadlarini kamayishiga", "Ishsizlikni ortisniga"], "a": 0}, {"q": "Sotsial moliyaviy siyosat Konstitutsiyaga muvofiq ...", "o": ["mamlakat aholisining huquqlarini moliyaviy jihatdan ta’minlash bilan bog’liq", "mamlakat ishchi va xizmatchilarining huquqlarini moliyaviy jihatdan ta’minlash bilan bog’liq", "mamlakat yoshlarining huquqlarini moliyaviy jihatdan ta’minlash bilan bog’liq", "mamlakat nafaqaxo’rlarining huquqlarini moliyaviy jihatdan ta’minlash"], "a": 0}, {"q": "Moliyaviy siyosat -", "o": ["iqtisodiy siyosatning tarkibiy qismi bo‘lib, moliyaviy resurslarni (manbalarni) jalb etish, ularni taqsimlash, ishga solish va foydalanishga yo‘naltirilgan barcha chora-tadbirlar yig‘indisi.", "markazlashgan va markazlashmagan fondlarni tashkil etish, taqsimlash va sarflash.", "davlatning vazifalari va funktsiyalari ham o‘zgartirish", "milliy xo‘jalik taraqqiyotida davlatning rolini oshirish"], "a": 0}, {"q": "Moliyaviy rejalashtirishning qanday turlari bo‘lishi mumkin?", "o": ["strategik moliyaviy rejalashtirish; joriy moliyaviy rejalashtirish", "taktik moliyaviy rejalashtirish; joriy moliyaviy rejalashtirish", "strategik moliyaviy rejalashtirish; muvozanatli moliyaviy rejalashtirish", "balansli moliyaviy rejalashtirish; joriy moliyaviy rejalashtirish"], "a": 0}, {"q": "Umumiy va eng oddiy ko‘rinishda, moliyaviy rejalashtirish deyilganda ...", "o": ["moliyaviy rejalarni tuzish va amalga oshirish jarayoni nazarda tutiladi", "moliyaviy rejalarni amalga oshirish jarayoni nazarda tutiladi", "moliyaviy rejalarni tuzish jarayoni nazarda tutiladi", "moliyaviy rejalarni tuzish va amalga oshirish jarayoni nazarda tutilmaydi"], "a": 0}, {"q": "Moliyaviy siyosatni ishlab chiqishda quyidagilardan qaysi birining bo‘lishi ahamiyatga ega emas?", "o": ["ijtimoiy ehtiyojlar va ularni qondirish choralarini aniqlagan holda moliyaviy resurslardan foydalanish", "taqsimlash munosabatlarining subyektlarini tanlash, ya’ni moliyaviy resurslarning egalari va taqsimlovchilarini tanlash", "moliyaviy resurslarni shakllantirishning manbalari va metodlarini tanlash", "davlatning funksiyalariga bog‘liq ravishda davlat ixtiyoridagi moliyaviy resurslarning markazlashtirilish darajasini aniqlash"], "a": 0}, {"q": "Moliyaviy siyosatning asosiy maqsadi ...", "o": ["jamiyatning sotsial-iqtisodiy taraqqiyoti, aholi turmush darajasi va sifatini oshirish uchun moliyaviy sharoitlarni yaratishdir", "jamiyatning iqtisodiy taraqqiyoti, aholi turmush darajasi va sifatini oshirish uchun moliyaviy sharoitlarni yaratishdir", "jamiyatning sotsial taraqqiyoti, aholi turmush darajasi va sifatini oshirish uchun moliyaviy sharoitlarni yaratishdir", "jamiyatning ijtimoiy taraqqiyoti va aholi turmush darajasini oshirish uchun moliyaviy sharoitlarni yaratishdir"], "a": 0}, {"q": "Moliyaviy siyosatning mazmuni...", "o": ["u qamrab olishi mumkin bo‘lgan moliyaviy munosabatlar rivojlanishi yo‘nalishlarining umumiy kompleksi bilan belgilanadi", "u qamrab olishi mumkin bo‘lgan ijtimoiy munosabatlar rivojlanishi yo‘nalishlarining xususiy kompleksi bilan belgilanadi", "u qamrab olishi mumkin bo‘lgan iqtisodiy munosabatlar rivojlanishi yo‘nalishlarining umumiy kompleksi bilan belgilanadi", "u qamrab olishi mumkin bo‘lgan siyosiy munosabatlar rivojlanishi yo‘nalishlarining xususiy kompleksi bilan belgilanadi"], "a": 0}, {"q": "Nazariya va amaliyotda moliyaviy bashoratlash ikkiga ajratiladi:", "o": ["o‘rta muddatli (5-10 yillik) moliyaviy bashoratlash; uzoq muddatli (10 yildan ortiq) moliyaviy bashoratlash", "o‘rta muddatli (3 yilgacha) moliyaviy bashoratlash; uzoq muddatli (5 yilgacha) moliyaviy bashoratlash", "o‘rta muddatli (5-7 yillik) moliyaviy bashoratlash; uzoq muddatli (10 yilgacha) moliyaviy bashoratlash", "o‘rta muddatli (7-10 yillik) moliyaviy bashoratlash; uzoq muddatli (10 yildan ortiq) moliyaviy bashoratlash"], "a": 0}, {"q": "Nodavlat moliyaviy nazorati nechta turga bo‘linadi?", "o": ["uchga bo‘linadi: ichki (firma ichidagi), jamoatchilik, mustaqil auditorlik", "ikkiga bo‘linadi: tashqi va auditorlik nazorati", "ikkiga bo‘linadi: ichki (firma ichidagi) va tashqi (auditorlik)", "ikkiga bo‘linadi: firma ichidagi va korporativ moliyaviy nazarat"], "a": 0}, {"q": "Notijorat asosda xo‘jalik yuritishning asosiy xususiyatlariga quyidagilardan qaysi biri kirmaydi?", "o": ["moliyaviy bozorning resurslaridan foydalangan holda investitsiyalashtirish uchun zarur bo‘lgan mablag‘larni jalb etish", "e’lon qilingan maqsadlarga erishish uchun olingan foydadan vosita sifatida foydalanish", "faoliyatning foyda olishga emas, balki ma’lum bir missiyaga erishishga yo‘naltirilganligi", "bozor xo‘jaligining iqtisodiy samaradorligi va faoliyatning sotsial samaradorligini birgalikda qo‘shib olib borish"], "a": 0}, {"q": "Pul siyosati orqali qanday vazifalar amalaga oshiriladi?", "o": ["muomaladagi pul miqdori tovarlar massasi miqdoriga mos kelmagan sharoitda pul massasining yetmagan qismini qog‘oz pullar hisobidan yoki xorijiy valyuta hisobidan to‘ldirish", "emissiya qilinayotgan pul miqdori tovarlar massasi miqdoriga mos kelmagan sharoitda xorijiy valyuta hisobidan to‘ldirish", "tovar ishlab chiqarishni chegaralash", "mamlakatda xorijiy valyutaning muomalada bo‘lishiga ruxsat bermaslik"], "a": 0}, {"q": "Byudjetga tushishiga qarab soliqlar qanday turlarga ajaratiladi?", "o": ["umumdavlat va mahalliy soliqlar", "to‘g‘ri soliqlar, egri soliqlar", "o‘z daromadlari va tartibga soluvchi daromadlari", "mol-mulk solig‘i va resurs to‘lovlari"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaning xarakterli belgisi hisoblanadi?", "o": ["markazlashtirilgan va markazlashtirilmagan pul fondlarini taskil etish", "moliya tizimining mavjudligi", "pulni tovarga ayrboshlanishi", "nazoratning mavjudligi"], "a": 0}, {"q": "Quyidagilardan qaysi biri Respublika byudjeti daromadlari hisoblanmaydi?", "o": ["mahalliy hokmiyat organlariga qarashli mulkdan foydalanishdan olingan daromadlar", "rezident-yuridik shaxslarga va chet el davlatlariga berilgan byudjet ssudalarini qaytarish hisobiga berilgan to‘lovlar", "davlat moliyaviy va boshqa aktivlarini joylashtirilishi, foydalanishga berilishi va sotilishidan olingan daromadlar", "yuridik va jismoniy shaxslardan, shuningdek, chet el davlatlaridan kelgan qaytarilmaydigan pul tushumlari"], "a": 0}, {"q": "Sotsial moliyaviy siyosatning tarkibi to’liq ko’rsatilgan javobni aniqlang.", "o": ["pensiya siyosati, immigratsion siyosat, aholi ayrim sotsial guruhlariga moliyaviy yordam ko’rsatish siyosati", "pensiya siyosati, emmigratsion siyosat, aholi ayrim sotsial guruhlariga moliyaviy yordam ko’rsatish siyosati", "pensiya siyosati, immigratsion siyosat", "immigratsion siyosat, aholi ayrim sotsial guruhlariga moddiy yordam ko’rsatish siyosati"], "a": 0}, {"q": "Moliya tizimining har bir sohasi...", "o": ["pul fondlari va daromadlarni shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "daromadlarni shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "pul fondlari va daromadlarni shakllantirishning konkret metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "pul fondlarini shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi"], "a": 0}, {"q": "Moliya tizimining sohalarini ko’rsating.", "o": ["Davlat moliyasi va mahalliy moliya, xo’jalik yurituvchi subyektlar moliyasi", "Davlat byudjeti, davlat krediti", "Tijorat va notijorat korxonalari moliyasi", "Sug’urta va tashkilotlar moliyasi"], "a": 0}, {"q": "Moliya tizimining davlat moliyasiga tegishli bo’g’nilarini ko’rsating.", "o": ["Davlat byudjeti, maqsadli nobyudjet fondlar, davlat krediti", "Davlat korxonalari moliyasi va mahalliy moliya,", "Tijorat korxonalari moliyasi, moliyaviy vositachilar moliyasi", "Respublika va mahalliy byudjetlar"], "a": 0}, {"q": "O‘zbekiston Respublikasi Byudjet kodeksida davlat byudjetiga qanday ta’rif berilgan?", "o": ["Davlat byudjeti davlatning vazifa va funksiyalarini moliyaviy jihatdan ta’minlash uchun mo’ljallangan markazlashgan pul jamg‘armasi.", "Davlat pul mablag‘larining markazlashtirilgan jamg‘armasi bo‘lib, unda daromadlar manbalari va ulardan tushumlar miqdori, aniq maqsadlar uchun ajratiladigan mablag‘lar sarfi yo‘nalishlari va miqdori nazarda tutiladi.", "Davlatning asosiy moliyaviy rejasi bo‘lib, unda moliya yili mobaynida daromadlar va xarajatlar miqdori aks etadi.", "Davlatning o‘z vazifa va funksiyalarini moliyaviy ta’minlash maqsadida ma’lum vaqt oralig‘ida (yil, chorak, oy) vujudga keltiradigan asosiy moliyaviy rejasidir."], "a": 0}, {"q": "Davlat moliyasining mustaqil bo‘g‘ini sifatida davlat krediti...", "o": ["davlat, yuridik va jismoniy shaxslar o‘rtasidagi pul munosabatlarining o‘ziga xos alohida shaklidan iboratdir", "byudjet daromadlarini ko‘paytirish maqsadida jalb etiladi", "YaIMni iste’mol qilishning qiymat proportsiyalarini kuzatish shakli", "byudjet ijrosini profitsit bilan bajarishga imkon beradi"], "a": 0}, {"q": "Davlat tomonidan tartibga solinish darajasiga qarab xarajatlar qanday guruhlarga bo‘linadi?", "o": ["me’yorlashtiriladigan xarajatlar, me’yorlashtirilmaydigan xarajatlar", "to‘g‘ri xarajatlar, egri xarajatlar", "ishlab chiqarish va realizatsiya bilan bog‘liq bo‘lgan xarajatlar, realizatsiyadan tashqari xarajatlar", "doimiy xarajatlar, o‘zgaruvchan xarajatlar"], "a": 0}, {"q": "Davlatning oliy moliyaviy nazorat organi qaysi?", "o": ["O‘zbekiston Respublikasi Hisob Palatasi", "Davlat soliq qo‘mitasi", "Davlat bojxona qo‘mitasi", "Davlat moliyaviy nazorat inspeksiyasi"], "a": 0}, {"q": "Davlat byudjetining daromadlari qanday tartibda klassifikatsiya qilinadi?", "o": ["bevosita soliqlar, bilvosita soliqlar, resurs to‘lovlari va mol-mulk solig‘i, boshqa daromadlar", "soliqli daromadlar va soliqsiz daromadlar", "biriktirilgan daromadlar va tartibga soluvchi daromadlar", "to‘g‘ri soliqlar va egri soliqlar, resurs to‘lovlari va mol-mulk solig‘i"], "a": 0}, {"q": "Korxona moliyaviy siyosatining asosiy maqsadi tog‘ri berilgan javobni aniqlang.", "o": ["korxona iqtisodiy salohiyatini oshirish va barqaror o‘sish sur’atlariga erishish", "korxonaning bozor qiymatini minimallashtirish", "byudjet daromadlarini ko‘paytirish", "iqtisodiyotni rivojlanishi"], "a": 0}, {"q": "Mamlakatning moliyaviy resurslari o‘sishining asosiy sharti berilgan javobni aniqlang.", "o": ["MDning ortishi (ko‘payishi)dir", "YaIMning ortishi (ko‘payishi)dir", "Tushumning ortishi (ko‘payishi)dir", "Foydaning ortishi (ko‘payishi)dir"], "a": 0}, {"q": "Moliya -", "o": ["pul fondlarini shakllantirish, taqsimlash va undan foydalanish bilan bog‘liq iqtisodiy munosabatlar yig‘indisi", "pulli munosabatlarni tartibga soladi", "pul fondlarini ifoda etadi", "pulli munosabatlarni ifodalaydi"], "a": 0}, {"q": "Moliya qanday sharoitda paydo bo‘ldi?", "o": ["Moliya davlatning vujudga kelishi va uning resurslarga bo‘lgan ehtiyojining rivojlanishi bilan doimiy (uzluksiz) tovar-pul munosabatlari sharoitida", "Pul fondlariga ehtiyoj sezilganda", "Pul munosabatlari sharoitida", "Kam xarajat qilib eng yuqori natijalarga erishish, moliya-xo‘jalik faoliyatini yanada yaxshilashda xo‘jalik yurituvchi subyektlar har bir xodimi va jamoasining moddiy manfaatdorligi hamda qiziquvchanligini oshirish vazifalariga bo‘ysundirilganda"], "a": 0}, {"q": "Moliya tizimi bu -", "o": ["davlat va korxonalarning pul fondlarini shakllantirish, taqsimlash va foydalanish borasidagi shakl va metodlar to‘plami", "moliya tizimi bo‘g‘nilarining yig‘indisidir", "fondlarini shaklantirish, taqsimlash va foydalanish munosabati", "moliyaviy siyosatni amalga oshirish vositasi"], "a": 0}, {"q": "Moliya vazirligi mamlakat miqyosida...", "o": ["yagona moliyaviy, byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi", "xilma-xil moliyaviy, byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi", "xilma-xil byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi", "yagona byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi"], "a": 0}, {"q": "Moliya vazirligining asosiy vazifalari tog‘ri va to‘liq berilgan javobni ko‘rsating.", "o": ["yagona davlat moliya siyosatini ishlab chiqish va uni amalga oshirish; davlat byudjetining loyihasini tuzish va uning ijrosini ta’minlash", "yagona davlat moliya siyosatini amalga oshirish; davlat byudjetining ijrosini ta’minlash", "yagona davlat moliya siyosatini ishlab chiqish; davlat byudjetining loyihasini tuzish", "yagona davlat moliya siyosatini ishlab chiqish va uni amalga oshirish; davlat byudjetining ijrosini ta’minlash"], "a": 0}, {"q": "Moliya vazirligining muhim bo‘linmasi g‘aznachilik tizimi bo‘lib, u ...", "o": ["davlat byudjetining kassa ijrosini ta’minlashda mas’uldir", "davlat byudjetining reja ijrosini ta’minlashda mas’uldir", "davlat byudjetining haqiqatdagi ijrosini ta’minlashda mas’uldir", "davlat byudjetining foydali ijrosini ta’minlashda mas’uldir"], "a": 0}, {"q": "Moliya YaIMni taqsimlashning turli bosqichlariga xizmat qilib, uni...", "o": ["birlamchi taqsimlashda va qayta taqsimlashda ishtirok etadi", "qayta taqsimlashda ishtirok etadi", "birlamchi taqsimlashda ishtirok etadi", "nazorat qilishda ishtirok etadi"], "a": 0}, {"q": "Moliyaviy bashoratlash ...", "o": ["moliyaviy rejalarni tuzish bosqichidan oldin sodir bo‘ladi", "moliyaviy rejalarni tuzish bosqichidan keyin sodir bo‘ladi", "moliyaviy rejalarni tuzish bosqichi bilan birgalikda sodir bo‘ladi", "moliyaviy rejalarni amalga oshirish bosqichi sodir bo‘ladi"], "a": 0}, {"q": "Moliyaviy boshqaruv -", "o": ["boshqariladigan obyektlar va boshqariluvchi subyektlar tizimlarining yagonaligidan iborat", "ma’lum bir natijaga erishishni ko‘zda tutish", "moliyaviy institutlarni pul munosabatlari ustidan boshqarish", "moliya tizimini boshqarishdan iborat"], "a": 0}, {"q": "Xalqaro moliya munosabatlarining subyektlari kimlar hisoblanadi?", "o": ["Xalqaro institutlar, davlatlar, jahon moliya bozorlari", "Pul oqimlari, kredit vositalari oqimlari", "Mamlakatlar o‘trasidagi barcha moliyaviy munosabatlar", "Transmilliykorporatsiyalar"], "a": 0}, {"q": "Moliyaviy boshqaruv tizimining ta’sir instrumentlari berilmagan javobni aniqlang.", "o": ["taqsimlash va nazorat", "moliyaviy rejalashtirish, bashortalash", "moliyaviy nazorat, dasturlashtirish", "moliyaviy tartibga solish, moliyaviy qonunlarni qabul qilish"], "a": 0}, {"q": "Moliyaviy boshqaruvning konkret metodlari va shakllari tarkibiga kirmaydigan javobni belgilang.", "o": ["tashqi moliyaviy munosabatlarni hisobga olish", "moliyaviy tartibga solish, moliyaviy nazorat", "moliyaviy qonunlar (qonunchilik)ni qabul qilish, moliyaviy resurslarni jalb qilish metodlari tizimi", "moliyaviy rejalashtirish; bashoratlash (prognozlashtirish), dasturlashtirish"], "a": 0}, {"q": "Moliyaviy boshqaruvning markaziy organi ...", "o": ["Moliya vazirligi va uning joylardagi organlari hisoblanadi", "Markaziy bank va uning joylardagi organlari hisoblanadi", "Davlat soliq qo‘mitasi va uning joylardagi organlari hisoblanadi", "G‘aznachilik va uning joylardagi organlari hisoblanadi"], "a": 0}, {"q": "Moliyaviy nazorat ...", "o": ["ham davlatning va ham boshqa barcha iqtisodiy subyektlarning manfaatlari hamda huquqlarini ta’minlashga qaratilgan", "faqat barcha iqtisodiy subyektlarning manfaatlari va huquqlarini ta’minlashga qaratilgan", "faqat davlatning manfaatlari va huquqlarini ta’minlashga qaratilgan", "faqat davlatning va boshqa barcha iqtisodiy subyektlarning manfaatlari va huquqlarini ta’minlashga qaratilmagan"], "a": 0}, {"q": "Moliyaviy nazorat ...", "o": ["moliya funksiyalarining amalga oshirilish shakli bo‘lib xizmat qiladi", "mohiyatining amalga oshirilish shakli bo‘lib xizmat qiladi", "moliya tizimining amalga oshirilish shakli bo‘lib xizmat qiladi", "moliya funksiyalarining amalga oshirilish shakli bo‘lib xizmat qilmaydi"], "a": 0}, {"q": "Moliyaviy nazoratni amalga oshirish borasida Hisob Palatasining bosh maqsadi nimadan iborat?", "o": ["davlat mablag‘larining sarflanishi ustidan umumiy nazoratni o‘rnatish", "XYSlarimablag‘larning sarflanishi ustidan umumiy nazoratni o‘rnatish", "davlat mablag‘larining sarflanishi ustidan xususiy nazoratni o‘rnatish", "xo‘jalik yurituvchi subyektlar mablag‘larining sarflanishi ustidan xususiy nazoratni o‘rnatish"], "a": 0}, {"q": "Moliyaviy rejalashtirish nima?", "o": ["moliyaviy resurslarning balansliligini va prorportsionalliligini ta’minlashga qaratilgan faoliyat", "umumiy va oddiy ko‘rinishda, moliyaviy rejalarni amalga oshirish jarayoni", "pul mablag‘laridan iqtisod qilib, tejab-tergab foydalanish hisobidan korxonaning foydasini oshirish", "umumiy va oddiy ko‘rinishda moliyaviy rejalarni tuzish jarayoni"], "a": 0}, {"q": "Moliya tizimining xo’jalik yurituvchi subyektlar moliyasi sohasiga tegishli bo’g’nilarini ko’rsating.", "o": ["Tijorat korxonalari moliyasi, moliyaviy vositachilar moliyasi", "Davlat korxonalari moliyasi va mahalliy moliya", "Davlat byudjeti, davlat krediti", "Maqsadli nobyudjet fondlar moliyasi"], "a": 0}, {"q": "Tijorat korxonalari va tashkilotlari....", "o": ["moliyaviy mustaqillikka ega", "foydani ishlab chiqarishni kengaytirishga yo‘naltirmaydilar", "ijtimoiy-sotsial fondlarni shakllantiradilar", "xarajatlarni turli fondlarga taqismlaydilar"], "a": 0}, {"q": "Notijorat asosida faoliyat yurituvchi tashkilotlar moliyasi moliya tizimining qaysi sohasiga tegishli?", "o": ["Xo’jalik yurituvchi subyektlar moliyasi", "Davlat korxonalari moliyasi va mahalliy moliya", "Tijorat korxonalari moliyasi", "Moliyaviy vositachilar moliyasi"], "a": 0}, {"q": "Davlat byudjeti taqchilligini moliyalashtirish manbalari", "o": ["taqchillikni moliyalashtirishning ichki va tashqi manbalari", "taqchillikni moliyalashtirishning qarzli va qarzsiz manbalari", "taqchillikni moliyalashtirishning inflyatsion va noinflyatsion manbalari", "taqchillikni moliyalashtirishning kredit va qarz manbalari"], "a": 0}, {"q": "Davlat byudjeti taqchilligi nima?", "o": ["Davlat byudjeti xarajatlarning daromadlardan oshib ketishi", "Xarajatlar va daromadlarning balansliligi", "Daromadlarning xarajatlardan oshib ketishi", "Obyektiv holat bo‘lib, ahamiyatsizdir"], "a": 0}, {"q": "YaIM va MDni qayta (ikkilamchi) taqsimlash kimlar o’rtasidagi moliyaviy munosabatlar doirasida sodir bo’ladi?", "o": ["Davlat va xo’jalik yurituvchi subyektlar", "Rahbarlar va xodimlar", "Korxona va aholi", "Sug’urta va bank tizimi"], "a": 0}, {"q": "Davlat kreditining funksiyalarini ko’rsating.", "o": ["Taqsimlash, nazorat va tartibga solish", "Tartibga solish, nazorat, tashkillashtirish", "Nazorat, tashkillashtirish, rag’batlantirish", "Tashkillashtirish, rag’batlantirish"], "a": 0}, {"q": "Joylashtirilishiga qarab davlat qarzlari qanday turlarga bo’linadi?", "o": ["Davlatning ichki va tashqi qarzlari", "Bozorli va bozorsiz qarzlar", "Markaziy va hududiy boshqaruv organlari tomonidan joylashtiriladigan qarzlar", "Moliyaviy bozorlar"], "a": 0}, {"q": "Moliyaviy vositachilarning asosiy vazifasi to’g’ri ko’rsatilgan javobni aniqlang.", "o": ["moliya bozoridagi mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash", "banklardagi mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash", "sug’urta bozoridagi mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash", "axborot xizmatlarini ko‘rsatuvchi firmalar mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash"], "a": 0}, {"q": "Ixtisoslashgan moliyaviy vositachilarga xos bo‘lgan deyarli barcha moliyaviy funksiyalarni bajaruvchi tashkilotlar ………… deb ataladi.", "o": ["universal banklar", "tijorat banklar", "investitsion banklar", "pensiya fondlari"], "a": 0}, {"q": "Quyidagilarni qaysi biri moliyaviy nazorat usullari hisoblanmaydi?", "o": ["taqsimlash, nazorat", "tekshiruv, kuzatuv", "tahlil, taftish", "nadzor, tadqiq etish"], "a": 0}, {"q": "To’liq qamrab olish, universal xarakterdalik nimani angalatadi?", "o": ["Davlat byudjeti nazorat funksiyasining xususiyatini", "Davlat byudjeti taqsimlash funksiyasining xususiyatini", "Davlat byudjetining ahamiyatini", "Davlat byudjetining xarakterli xususiyatini"], "a": 0}, {"q": "………… – bu pul massasining tovar aylanmasi ehtiyojlariga nisbatan ortib ketishi natijasida pul birligining qadrsizlanishi va shunga mos ravishda tovar narxlarining o’sishidir.", "o": ["Inflatsiya", "Devalivatsiy", "Revalivatsiya", "Bifilatsiya"], "a": 0}, {"q": "O‘zbekistonda moliya yili qanday muddatni o’z ichiga oladi?", "o": ["1 yanvardan 31 dekabrgacha", "1 oktyabrdan 31 sentyabrgacha", "1 apreldan 31 martgacha", "1 iyulndan 31 iyungacha"], "a": 0}, {"q": "......ning bosh maqsadi joylashtirilgan kapitaldagi foyda normasini oshirish maqsadida davlatga ajratmalarni minimallashtirishdan iborat.", "o": ["Nodavlat moliyaviy nazorati", "Byudjet nazorati", "Bojxona nazorati", "Davlat moliyaviy nazorati"], "a": 0}, {"q": "Joriy nazorat …. …. hisoblanadi.", "o": ["moliyaviy nazorat o‘tkazish shakli", "moliyaviy nazorat turi", "moliyaviy nazoratni obyektlarga ko‘ra turi", "moliyaviy nazorat usuli"], "a": 0}, {"q": "Moliyaviy nazorat subyektlarini ko‘rsating.", "o": ["Moliya organlari", "Ta’lim muassasalari", "Tibbiyot muassasalari", "Korxonalar"], "a": 0}, {"q": "O‘zbekiston Respublikasi davlat byudjeti daromadlari tarkibida eng yuqori ulushni tashkil etadi -", "o": ["bilvosita soliqlar", "bevosita soliqlar", "resurs to‘lovlari va mol-mulk solig‘i", "daromaddan olinadigan soliqlar"], "a": 0}, {"q": "Mahalliy byudjetlar loyihasi kim tomonidan tasdiqlanadi?", "o": ["Qoraqalpog‘iston Respublikasi Jo‘qorg‘i Kengesi, xalq deputatlari viloyatlar va Toshkent shahar, tumanlar va shaharlar Kengashlari", "O‘zbekiston Respublikasi Oliy Majlisi", "Qoraqalpog‘iston Respublikasi Vazirlar Kengashi, viloyatlar va Toshkent shahar, tumanlar va shaharlar hokimlari", "O‘zbekiston Respublikasi Moliya vazirligi"], "a": 0}, {"q": "Moliyaviy vositachilarning moliyaviy xizmatlari nimalardan iborat?", "o": ["hisob raqamlarni ochish, tijorat qarzlari va ipoteka kreditlarini berish, sug’urta shartnomalarining keng doirasiga hamda o’zaro jamg’armalarda ishtirok etishiga yo’l ochish", "mahsulot ishlab chiqarish, yetkazib berish, hisob raqamlarni ochish, tijorat qarzlari va ipoteka kreditlarini berish", "mahsulot ishlab chiqarish, yetkazib berish, sug’urta shartnomalarining keng doirasiga hamda o’zaro jamg’armalarda ishtirok etishiga yo’l ochish", "ish haqi berish, homiylik qilish, hisob raqamlarni ochish, tijorat qarzlari va ipoteka kreditlarini berish"], "a": 0}, {"q": "Resurslarning moliyaviy resurslari ortiqcha bo’lgan iqtisodiy subyektlardan moliyaviy resurslari defitsit bo’lgan iqtisodiy subyektlarga oqib o’tishi nima deyiladi?", "o": ["moliyaviy oqim", "moliyaviy vositachilar", "xalqaro firma", "pul oqimi"], "a": 0}, {"q": "Byudjet buyurtmasi kim tomonidan tuziladi?", "o": ["Byudjet tashkiloti, byudjet mablag‘lari oluvchi va byudjet mablag‘larini taqsimlovchilar tomonidan", "O‘zbekiston Respublikasi Moliya vazirligi tomonidan", "Qoraqalpog‘iston Respublikasi Juqorg‘i Kengesi va tegishli hududiy hokimiyat organlari tomonidan", "O‘zbekiston Respublikasi Oliy Majlisi tomonidan"], "a": 0}, {"q": "Moliyaviy nazoratni amalga oshiruvchi subyektlariga ko‘ra qanday turlari mavjud?", "o": ["Umumdavlat, idoraviy, xo‘jalik ichidagi, jamoatchilik va mustaqil auditorlik moliyaviy nazorati", "Umumdavlat, umumilliy, ichki audit, jamoatchilik va mustaqil auditorlik moliyaviy nazorati", "Davlat, nodavlat, xo‘jalik ichidagi, va mustaqil auditorlik moliyaviy nazorati", "Nodavlat, notijorat, mahalliy, respublika darajasidagi, auditorlik moliyaviy nazorati"], "a": 0}, {"q": "Davlat moliyaviy nazoratining bosh maqsadi - …", "o": ["Davlat xazinasiga resurslarni tushurishni maksimallashtirish va davlat xarajatlarini minimallashtirishdan iborat", "Davlat byudjetiga resurslarni tushurishni va davlat byudjeti xarajatlarini minimallashtirishdan iborat", "Joylashtirilgan kapitaldagi foyda normasini maksimallashtirish va boshqaruv xarajatlarini minimallashtirishdan iborat", "Joylashtirilgan kapitaldagi foyda normasini maksimallashtirish va boshqa xarajatlarni minimallashtirishdan iborat"], "a": 0}, {"q": "Soliq, bojxona va byudjet nazorati qanday nazorat?", "o": ["Davlat moliyaviy nazorati", "Auditorlik moliyaviy nazorati", "Nodavlat moliyaviy nazorati", "Jamoatchilik moliyaviy nazorati"], "a": 0}, {"q": "Moliyaviy nazoratni amalga oshirishda qanday usullardan foydalaniladi?", "o": ["tekshirish, tadqiq etish, moliyaviy tahlil, monitoring, boshqaruv nazorati, taftish", "tekshirish, tadqiq etish, moliyaviy tahlil qilish, o’rganish, boshqarish, taftish", "tekshirish, tadqiq etish, tahlil etish, kuzatish va o’rganish, mavzuli va kompleks taftish", "yalpi va tanlanma tekshirish, kuzatish va o’rganish, mavzuli va kompleks taftish"], "a": 0}, {"q": "O‘zbekiston Respublikasi Konstitutsiyasining 78-moddasi 8-bandiga muvofiq O’zbekiston Respublikasi Oliy Majlisiga moliyaviy nazorat sohasida qanday vakolat berilgan?", "o": ["O’zbekiston Respublikasi Oliy Majlisi Vazirlar Mahkamasining taqdimoti bo’yicha mamlakat byudjetini qabul qiladi va uning ijrosi ustidan nazorat o’rnatadi", "O’zbekiston Respublikasi Oliy Majlisi Hisob palatasining taqdimoti bo’yicha mamlakat byudjetini qabul qiladi va uning ijrosi ustidan nazorat o’rnatadi", "O’zbekiston Respublikasi Oliy Majlisi Vazirlar Mahkamasining taqdimoti bo’yicha byudjetni muhokama qiladi, ko’rib chiqadi, qabul qiladi", "O’zbekiston Respublikasi Oliy Majlisi Hisob palatasining taqdimoti bo’yicha mamlakat byudjetini muhokama qiladi, ko’rib chiqadi, qabul qiladi"], "a": 0}, {"q": "O‘zbekiston Respublikasining “O’zbekiston Respublikasining Hisob Palatasi to’g’risida”gi O’RQ-546-son qonuni qachon qabul qilingan?", "o": ["2019 yil 1 iyulda", "2020 yil 1 dekabrda", "2018 yil 10 iyulda", "2002 yil 10 dekabrda"], "a": 0}, {"q": "O`zbekiston Respublikasi Hisob Palatasi qachon tashkil etilgan?", "o": ["O’zbekiston Respublikasi Prezidentining 2002-yil 27-iyundagi 3093-son farmoniga muvofiq", "O’zbekiston Respublikasi Vazirlar Mahkamasining 1992-yil 11-fevraldagi 59-son Qaroriga muvofiq", "O‘zbekiston Respublikasi Prezidentining 2005-yil 2-apreldagi PF-3592-son Farmoniga muvofiq", "O’zbekiston Respublikasi Vazirlar Mahkamasining 2012-yil 23-maydagi 143-son Qaroriga muvofiq"], "a": 0}, {"q": "Sug‘urta faoliyati bo‘yicha litsenziyani berish, bekor qilish ishlari qaysi organ tomonidan amalga oshiriladi?", "o": ["O’zbekiston Respublikasi Moiya vazirligi", "O’zbekiston Respublikasi Moiya vazirligi Davlat moliyaviy nazorat Departamenti", "O’zbekiston Respublikasi Vazirlar Mahkamasi", "O’zbekiston Respublikasi Davlat sug‘urta nazorati inspeksiyasi"], "a": 0}, {"q": "Amalga oshirish reglamenti bo’yicha moliyaviy nazoratning turlarini ko’rsting.", "o": ["tashabbuskorlik, majburiy", "dastlabki, joriy", "davlat, nodavlat", "umumdavlat, idoraviy"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaviy bozorlar tarkibiga kirmaydi?", "o": ["xo’jalik buyumlari bozori", "pul bozori", "valyuta bozori", "kapital bozori"], "a": 0}, {"q": "Amalga oshirish vaqti bo’yicha moliyaviy nazoratning turlarini ko’rsting.", "o": ["dastlabki, joriy, yakuniy", "tashabbuskorli, majburiy", "davlat, nodavlat", "umumdavlat, idoraviy"], "a": 0}, {"q": "2022 yilda jamlanma byudjet tarkibida nechta davlat maqsadli jamg’armasi faoliyat yuritmoqda?", "o": ["23", "18", "7", "20"], "a": 0}, {"q": "Moliyaviy nazoratning asosiy maqsadi...", "o": ["qonun buzilishlarini oldini olish", "aybdorni jazolash", "byudjetni to’ldirish", "mablag’arni qayta undirish"], "a": 0}, {"q": "Jamoatchilik nazorati bu …dir.", "o": ["nodavlat tashkilotlar tomonidan olib boriladigan nazorat", "oliy darajadagi nazorat organlari nazorati", "ichki moliya bo‘limi tomonidan olib boriladigan nazorat", "hokimiyat tomonidan o‘tkaziladigan nazorat"], "a": 0}, {"q": "Vazirlik miqyosida o`tkaziladigan moliyaviy nazorat bu - …", "o": ["idoraviy nazorat", "hokimiyat nazorati", "jamoatchilik nazorati", "ichki nazorat"], "a": 0}, {"q": "Moliyaviy nazoratning sohalarini ko’rsting.", "o": ["davlat, nodavlat", "tashabbuskorli, majburiy", "ichki, tashqi", "umumdavlat, idoraviy"], "a": 0}, {"q": "Sug’urta mukofoti bu ……...?", "o": ["xizmat ko’rsatilgani uchun mijoz tomonidan to’lanadigan pullar", "sug’urta kompaniyasi foydasi", "sug’urta kompaniyasi tomonidan mijozga to’lanadigan pullar", "sug’urta bonuslari"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaviy hisobot turlariga kirmaydi?", "o": ["Vaqtinchalik smeta", "Balans", "Moliyaviy natijalar to’g’risida hisobot", "Pul oqimlari to’g’risida hisobot"], "a": 0}, {"q": "Pul oqimlari to’g’risidagi hisobotda nimalar aks etadi?", "o": ["Pul oqimlari to’g’risidagi hisobotda ma’lum davr ichida firmaning pul oqimlari kirimi va chiqimi aks ettiriladi", "Moliyaviy natijalar to’g’risidagi hisobotda ma’lum vaqt oralig’ida firma samaradorligiga umumiy baho beriladi", "Firma balansi uning muayyan vaqt oralig’idagi aktivlarini (va majburiyatlarini aks ettiradi", "Daromad va xarajatlarning balansi ko’rsatiladi"], "a": 0}, {"q": "Moliyaviy hisobotlarninig qanday asosiy turlari mavjud?", "o": ["Buxgalteriya balansi, moliyaviy natijalar to’g’risida hisobot, pul oqimlari to’g’risida hisobot", "Balans, asosiy vositalar to’g’risida hisobot, pul oqimlari to’g’risida hisobot", "Debitorlik va kreditorlik to’g’risida hisobot, moliyaviy natijalar to’g’rida hisobot, asosiy vositalar to’g’risida hisobot", "Debitorlik va kreditorlik to’g’risida hisobot, moliyaviy natijalar to’g’risida hisobot, pul oqimlari to’g’risida hisobot"], "a": 0}, {"q": "Foyda - bu kompaniyaning ………………", "o": ["daromadi va xarajatlari o’rtasidagi musbat farq", "daromadi va xarajatlari o’rtasidagi manfiy farq", "taqsimlanmagan daromad va kreditorlik qarzlari", "aylanma aktivlar va xarajatlari"], "a": 0}, {"q": "Moliyaviy operatsiyalar bajarilganidan so’ng davlat moliyaviy nazorat organlari tomonidan amalga oshiriladigan nazorat bu - ...", "o": ["yakuniy nazorat", "dastlabki nazorat", "joriy nazorat", "idoraviy nazorat"], "a": 0}, {"q": "Milliy valyutaning chet el valyutalariga yoki xalqaro hisob-kitob pul birliklariga nisbatan qadrining tushishi nima deb ataladi?", "o": ["devalivatsiya", "inflatsiya", "imobilizatsiya", "revalvatsiya"], "a": 0}, {"q": "Byudjet tashkilotlari moliya-xo’jalik faoliyatini taftish qilish yakunida qanday hujjat rasmiylashtiriladi?", "o": ["dalolatnoma", "bildirishnoma", "ma’lumotnoma", "xabarnoma"], "a": 0}, {"q": "Tijorat banklarida majburiy rezerv normasi kim tomonidan belgilanadi?", "o": ["Markaziy Bank", "Oliy Majlis", "Moliya Vazirligi", "Vazirlar Mahkamasi"], "a": 0}, {"q": "Moliyaviy operatsiyalar bajarilishi jarayonida g’aznachilik bo’linmalari, moliya organlari va davlat soliq xizmati organlari tomonidan amalga oshiriladigan nazorat bu - …", "o": ["joriy nazorat", "yakuniy nazorat", "dastlabki nazorat", "ichki nazorat"], "a": 0}, {"q": "Byudjet daromadlarini to‘g‘ri va o‘z vaqtida kelib tushishini nazorat qilish davlatning qaysi vakolatli organlari tomonidan amalga oshiriladi?", "o": ["O‘zbekiston Respublikasi Moliya vazirligi, O‘zbekiston Respublikasi Davlat Soliq Qo‘mitasi, O‘zbekiston Respublikasi Bojxona Qo‘mitasi", "O‘zbekiston Respublikasi Moliya vazirligi, O‘zbekiston Respublikasi Bojxona Qo‘mitasi", "O‘zbekiston Respublikasi Markaziy banki", "O‘zbekiston Respublikasi Soliq Qo‘mitasi"], "a": 0}, {"q": "Byudjet fondini shakllantirishda qanday tushunchadan foydalaniladi.", "o": ["Byudjetga to‘lovlar, davlat byudjetining daromadlari", "Soliqlar va majburiy yig‘imlar", "Moliyaviy resurslar va mablag‘lar", "Byudjetga tushumlar va daromadlar"], "a": 0}, {"q": "Byudjet siyosatining ustuvorligini...", "o": ["davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini yo‘naltirish tashkil etadi", "davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini shakllantirish tashkil etadi", "davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini iqtisod qilish tashkil etadi", "davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini ko‘paytirish tashkil etadi"], "a": 0}, {"q": "Byudjet tizimining mohiyati tog‘ri berilgan qatorni ko‘rsating.", "o": ["Iqtisodiy munosabatlar va huquqiy me’yorlarga asoslangan hamda o‘zaro qonuniy bog‘liqlikda va aloqadorlikda bo‘lgan mamlakatning barcha byudjetlari yig‘indisi", "Moliya tizimining markaziy bo‘g‘ini", "Byudjet daromadlari va xarajatlarining yig‘indisi", "Markaziy byudjet va maxalliy byudjetlar yig‘indisi"], "a": 0}, {"q": "Pensiya siyosati ….. tarkibiy qismi hisoblanadi.", "o": ["ijtimoiy siyosatning", "byudjet siyosatining", "soliq siyosatining", "immigratsion siyosatning"], "a": 0}, {"q": "Shaxsiy sug`urtaning shakllarini ko`rsating.", "o": ["ixtiyoriy va majburiy;", "ixtiyoriy va xususiy;", "majburiy va umumiy;", "xususiy va majburiy;"], "a": 0}, {"q": "Moliyaviy operatsiyalar bajarilguniga qadar g’aznachilik bo’linmalari va moliya organlari tomonidan amalga oshiriladigan nazorat bu - ….", "o": ["dastlabki nazorat", "joriy nazorat", "yakuniy nazorat", "tashqi nazorat"], "a": 0}, {"q": "O’zbekiston Respublikasining davlat kafolatlarini rasmiylashtirish bo‘yicha vakolatli organ - ……………", "o": ["O‘zbekiston Respublikasi Moliya Vazirligi", "O‘zbekiston Respublikasi Hisob Palatasi", "O‘zbekiston Respublikasi Markaziy Banki", "O‘zbekiston Respublikasi Vazirlar Mahkamasi"], "a": 0}, {"q": "O‘zbekiston Respublikasi davlat byudjeti daromadlari tarkibida eng yuqori ulushni qaysi soliq tashkil etadi?", "o": ["QQS", "Aksiz", "Resurs to‘lovlari va mol-mulk solig‘i", "Daromaddan olinadigan soliqlar"], "a": 0}, {"q": "Bir valyutaga nisbatan boshqa bir valyutaning bahosini o’zgarishi………………. deb ataladi.", "o": ["valyuta kursi", "valyuta riski", "valyuta ayirboshlash", "valyuta sotuvi"], "a": 0}, {"q": "Muddati bir yildan kam bo'lgan qarz majburiyatlari bozori qanday nomlanadi?", "o": ["pul bozori", "kapital bozori", "valyuta bozori", "fond bozori"], "a": 0}, {"q": "Moliya vazirligi G’aznachiligi qanday nazoratni amalga oshiradi ?", "o": ["Dastlabki va joriy moliyaviy nazoratni", "So‘nggi va yakuniy moliyaviy nazoratni", "Barcha moliyaviy nazoratlarni", "Navbatdagi moliyaviy nazoratni"], "a": 0}, {"q": "Byudjet tizimi byudjetlarini shakllantirish, ijro etish ustidan nazorat ...... hisoblanadi.", "o": ["davlat moliyaviy nazorati", "mahalliy moliyaviy nazorat", "nodavlat moliyaviy nazorati", "ichki moliyaviy nazorat"], "a": 0}, {"q": "Jalb qilinishiga ko’ra davlat qarzlari qanday qarzlarga bo’linadi?", "o": ["Ichki va tashqi qarzlari", "Bozorli va bozorsiz qarzlar", "Markaziy va hududiy boshqaruv organlari tomonidan joylashtiriladigan qarzlar", "Moliyaviy bozorlar"], "a": 0}, {"q": "Sug’urtaning funksiyalari to’g’ri ko’rsatilgan javobni ko’rsating", "o": ["Sug’urta fondini tashkil etish va undan foydalanish bilan bog’liq funksiyasi, nazorat funksiyasi", "Nazorat funksiyasi, qayta taqsimlash", "Taqsimlash va qayta taqsimlash, nazorat", "Sug’urta fondini tashkil etish funksiyasi, nazorat funksiyalari"], "a": 0}, {"q": "Uy xo’jaliklari moliyasi ....", "o": ["Markazlashmagan moliya", "Xo’jalik yurituvchi subyektlar moliyasining bir qismi", "Umumdavlat moliyasining bir qismi", "Davlat moliyasi tizimining tarkibiy qismi"], "a": 0}, {"q": "Uy xo‘jaligini xo‘jalik yuritishning mustaqil iqtisodiy va moliyaviy birligi sifatida ajartilishi qaysi mezonlar asosida amalga oshirilmog‘i lozim?", "o": ["Birgalikda yashash, umumiy byudjetning mavjudligi, iqtisodiy qarorlarni birga qabul qilish", "Birgalikda yashash va birgalikda qaror qabul qilish", "Birgalikda yashash va iqtisodiy qarorlarni birga qabul qilish", "Umumiy byudjetning mavdujligi va qaror qabul qilishning birgalikdaligi"], "a": 0}, {"q": "Uy xo‘jaliklari iqtisodiyotda tovarlar va xizmatlarni iste’mol qiluvchilar sifatida nimani belgilab beradi?", "o": ["Bozor talabini", "Bozor taklifini", "Bozor muvozanatini", "Hech narsani"], "a": 0}, {"q": "Davlat va uy xo‘jaliklari o‘rtasidagi moliyaviy munosabatlar qanday munosabatlarni ifodalaydi?", "o": ["Byudjet hamda nobyudjet fondlarni shakllantirish va ulardan foydalanishdagi munosabatlarni ifodalaydi", "Bank kreditlaridan foydalanishdagi munosabatlarni ifodalaydi", "Faqatgina pensiya olishdagi munosabatlarni ifodalaydi", "Ijtimoiy himoya qilishdagi munosabatlarni ifodalaydi"], "a": 0}, {"q": "O‘zbekiston Respublikasining “Byudjet kodeksi to‘g‘risida”gi Qonuni qachondan amaliyotga tatbiq etilgan?", "o": ["2014 yil 1 yanvardan", "1992 yil 29 dekabrdan", "1999 yil 3 sentyabrdan", "2013 yil 27 dekabrdan"], "a": 0}, {"q": "Qanday daromadlar uy xo‘jaligining nominal daromadlari deyiladi?", "o": ["Uy xo‘jaligi a’zolarining ma’lum davrdagi shaxsiy daromadlari majmuining puldagi ifodasiga", "Uy xo‘jaligi a’zolarining ma’lum davrdagi shaxsiy natural ko‘rinishdagi daromadlariga", "Uy xo‘jaligi a’zolarining ma’lum davrdagi moliyaviy aktivlaridan olingan daromadlari majmuiga", "Uy xo‘jaligi a’zolarining ma’lum davrdagi ish haqilari yig‘indisiga"], "a": 0}, {"q": "Uy xo‘jaliklarining pul daromadlari manbai notog‘ri berilgan javobni belgilang.", "o": ["Tijorat banklari kreditlari", "Mehnat haqi va sotsial to‘lanmalar", "Tadbirkorlik faoliyatidan keluvchi daromadlar", "Mol-mulkdan keluvchi daromadlar"], "a": 0}, {"q": "Uy xo‘jaliklarining mulkdan olinadigan daromadlari notog‘ri berilgan javobni ko‘rsating.", "o": ["Ish haqi", "Foizlar", "Dividentlar", "Rentalar"], "a": 0}, {"q": "Aholining shaxsiy daromadlari qaysi ko’ratkichlar yordamida o’lchanadi?", "o": ["Nominal daromadlar, ega bo’lingan daromadlar va real daromadlar", "Hisoblangan nominal daromadlar va haqiqatda olingan nominal daromadlar", "Pul daromadlari va real daromadlar", "Ega bo’lingan va real ega bo’lingan daromadlar"], "a": 0}, {"q": "Byudjet kreditlarining umumiy hajmi kim tomonidan aniqlanadi?", "o": ["Moliya vazirligi tomonidan", "Vazirlar Mahkamasi tomonidan", "Markaziy bank tomonidan", "Hisob palatasi tomonidan"], "a": 0}, {"q": "Byudjet kreditlarining umumiy hajmi qachon aniqlanadi?", "o": ["Byudjet loyihasi tayyorlanayotgan paytda", "Byudjet tasdiqlanayotgan paytda", "Moliya yili boshlanmasdan oldin", "Byudjet loyihasi ko’rib chiqilayotgan paytda"], "a": 0}, {"q": "Davlat byudjeti ijrosi haqidagi hisobotni qaysi organ tayyorlaydi?", "o": ["Moliya vazirligi", "Hisob palatasi", "Vazirlar Mahkamasi", "Moliya bo‘limlari"], "a": 0}, {"q": "Byudjet profitsiti nima?", "o": ["Byudjet daromadlarining xarajatlardan ortishi", "Byudjet xarajatlarining daromadlaridan ortishi", "Byudjet daromadlarining xarajatlari bilan tengligi", "Byudjet daromaadlari va xarajatlari o’rtasidagi nisbat"], "a": 0}, {"q": "Moliyaviy resurslarining harakati, shakllanishi, taqsimlanishi va xalqaro moliya bozori institutlari hamda xalqaro institutlar va tashkilotlar tomonidan ishlatilishiga asoslangan tarkibi bo’yicha murakkab bo’lgan munosabatlar tizimidir bu...", "o": ["Xalqaro moliya munosabatlari", "Tashqi iqtisodiy faoliyat", "Moliyaviy globallashuv", "Jahon xo’jaligi"], "a": 0}, {"q": "Muayyan mamlakatning boshqa mamlakatlar bilan xalqaro mehnat taqsimoti, fan va ishlab chiqarishni ixtisoslashtirish hamda boshqa omillarga asoslangan ishlab chiqarish, savdo, siyosiy va boshqa xil munosabatlari bu….", "o": ["Tashqi iqtisodiy aloqalar", "Iqtisodiy globallashuv", "Xalqaro moliya munosabatlari", "Iqtisodiy integratsiya"], "a": 0}, {"q": "Tashqi iqtisodiy aloqalarga kirishgan, ularning afzalliklariga tayanib rivojlanib boruvchi iqtisodiyot bu...", "o": ["Ochiq iqtisodiyot", "Moliyaviy globallashuv", "Iqtisodiy globallashuv", "Iqtisodiy integratsiya"], "a": 0}, {"q": "Eksport kvotasi nima?", "o": ["Mamlakat eksportining YaIM dagi aniq nisbati", "Tovarlarni tashqaridan sotib olib mamlakat ichiga kiritish", "Eksport va import o’rtasidagi farq", "To’g’ri javob yo’q"], "a": 0}, {"q": "Jahondagi iqtisodiy, ijtimoiy va siyosiy harakatlarning umumbashariy tus olishi bu...", "o": ["Globalizatsiya", "Integratsiya", "Ochiq iqtisodiyot", "Mehnat migratsiyasi"], "a": 0}, {"q": "Xalqaro valyuta fondi (XVF) va Xalqaro tiklanish va taraqqiyot banki qachon va qayerda tashkil etilgan?", "o": ["1944-yilda AQShda", "1949-yilda Germaniyada", "1951-yilda Xitoyda", "1974-yilda Angolada"], "a": 0}, {"q": "Jahon Bankining asosiy maqsadi –", "o": ["iqtisodiy o’sish davrini boshdan kechirayotgan rivojlanayotgan mamlakatlarni kreditlash yo’li bilan kambag’allik darajasini pasaytirish hisoblanadi.", "rivojlanayotgan mamlakatlarga kredit ajratish yo’li bilan ishlab chiqarishni barqarorlashtirish hisoblanadi", "rivojlanayotgan mamlakatlardagi tijorat banklari faoliyatini tartibga solish hisoblanadi", "iqtisodiy o’sish davrini boshdan kechirayotgan rivojlanayotgan mamlakatlarda bank-moliya tizimini barqarorlashtirish hamda uni tartibga solish hisoblanadi."], "a": 0}, {"q": "“Jahon banki” guruhiga quydagi tashkilotlardan qaysi biri kirmaydi?", "o": ["Xalqaro valyuta jamg‘armasi", "Xalqaro tiklanish va taraqqiyot banki, Xalqaro rivojlanish assotsiatsiyasi", "Xalqaro moliya korporatsiyasi", "Investitsiyalarni kafolatlash bo‘yicha ko‘p tomonlama agentlik, Xalqaro investitsion bahslarni tartibga solish markazini"], "a": 0}, {"q": "Osiyo Taraqqiyot Banki (OTB) –", "o": ["Osiyo va Tinch okeani mintaqasi mamlakatlarining rivojlanish loyihalari uchun uzoq muddatga kredit ajratish bilan shug’ullanadigan yirik davlatlararo moliya institutlaridan biri hisoblanadi.", "Osiyo mintaqasi mamlakatlarining rivojlanish loyihalari uchun uzoq muddatga kredit ajratish bilan shug’ullanadigan davlatlararo moliya institutlaridan biri hisoblanadi.", "Osiyo okeani mintaqasi mamlakatlarida ishlab chiqarishni rivojlantirish uchun qisqa muddatga kredit ajratish bilan shug’ullanadigan yirik davlatlararo moliya institutlaridan biri hisoblanadi.", "Osiyo va Tinch mintaqasi mamlakatlarining rivojlanish loyihalari investisiyalar ajratish bilan shug’ullanadigan moliya institutlaridan biri hisoblanadi."], "a": 0}, {"q": "Xalqaro valyuta fondining bosh maqsadini ko‘rsating.", "o": ["Xalqaro valyuta tizimi barqarorligini ta’minlash", "Xalqaro valyuta bozorlari barqarorligini ta’minlash", "Xalqaro valyuta operatsiyalarini tartibga solish", "Xalqaro valyuta kreditlar bozorini rivojlantirish"], "a": 0}, {"q": "Valyuta bozori – bu......", "o": ["Xorijiy valyutaga nisbatan talab va taklif to‘qnash keladigan bozordir", "Xorijiy valyutaga nisbatan talab yuqori bo‘lgan bozordir", "Xorijiy valyutaga nisbatan taklif yuqori bo‘lgan bozordir", "Xorijiy valyutani sotadigan joydir"], "a": 0}, {"q": "Valyuta tizimi bu. . .", "o": ["Davlatlararo bitim yoki milliy qonunlarga muvofiq valyuta munosabatlarini tashkil qilish va boshqarish shakllarini o’z ichiga oladi.", "Milliy kompaniyalarning iqtisodiy barqarorligini oshirish natijasida jahon iqtisodiy tizimi ta’siriga tushishi hamda xalkaro operatsiyalar turi va ishlab chiqarish hajmini ko’paytirish hisoblanadi.", "Rivojlanayotgan mamlakatlardagi tijorat banklari faoliyatini tartibga solish hisoblanadi.", "Muayyan mamlakatning boshqa mamlakatlar bilan xalqaro mehnat taqsimoti, fan va ishlab chiqarishni ixtisoslashtirish hamda boshqa omillarga asoslangan ishlab chiqarish, savdo, siyosiy va boshqa xil munosabatlari hisoblanadi."], "a": 0}, {"q": "Sug’urta bozori bu-", "o": ["jamiyatning sug’urta himoyasiga bo’lgan ehtiyojlarini qondirish jarayonida sug’urta qoplamasini oldi-sotdisi bo’yicha yuzaga keladigan iqtisodiyot tizimi.", "Sug’urta shartnomalari tuziladigan joy.", "Sug’urta operatsiyalarini amalga oshirish jarayonida sug’urtalanuvchi va sug’urtalovchi uchrashadigan joy.", "To’g’ri javob berilmagan"], "a": 0}, {"q": "Sug‘urta tashkilotlari xarajatlariga quyidagilardan qaysi biri kirmaydi?", "o": ["kunlik birlamchi xarajatlar", "sug‘urta xizmatlarini ko‘rsatish bilan bog‘liq xarajatlar", "sug‘urta faoliyatini amalga oshirish bilan bog‘liq xarajatlar", "sug‘urta xizmatlarini sotish bilan bog‘liq xarajatlar"], "a": 0}, {"q": "Byudjet kreditlari kimlarga berilishi mumkin?", "o": ["davlat korxonalariga va xususiy yuridik shaxslarga", "faqat xususiy yuridik shaxslarga", "faqat davlat korxonalariga", "korxonalarga va jismoniy shaxslarga"], "a": 0}, {"q": "……………… - moliyaviy resurslarining harakati, shakllanishi, taqsimlanishi va xalqaro moliya bozori institutlari hamda xalqaro institutlar va tashkilotlar tomonidan ishlatilishiga asoslangan tarkibi bo‘yicha murakkab bo‘lgan munosabatlar tizimi.", "o": ["Xalqaro moliya munosabatlari", "Moliyaviy globallashuv", "Jahon xo‘jaligi", "Tashqi iqtisodiy faoliyat"], "a": 0}, {"q": "O‘zbekiston Respublikasi byudjet kodeksiga asosan Byudjetnomani Hisob palatasiga qaysi organ taqdim etadi?", "o": ["Vazirlar Mahkamasi", "Moliya Vazirligi", "Oliy Majlis qonunchilik palatasi", "Oliy majlis Senati"], "a": 0}, {"q": "Quyidagilardan qaysi biri mahalliy byudjetning biriktirilgan daromadlari tarkibiga kiradi?", "o": ["Mol-mulk solig’i", "Qo’shilgan qiymat solig’i", "Aktsiz solig’i", "Yuridik shaxslar daromad (foyda) solig’i"], "a": 0}, {"q": "Moliyaviy holatni baholash, moliyaviy resurslarni oshirish imkoniyatlarini, ulardan eng samarali foydalanish yo‘nalishlarini aniqlash – bu...........................", "o": ["Rejalashtirish", "Nazorat", "Tezkor (operativ) boshqarish", "Ijro etish"], "a": 0}];
+var ALL_GROUPS = [[{"q": "Quyidagilardan qaysi biri moliyaning obyekti hisoblanmaydi?", "o": ["Qimmatli qog’ozlar", "Markazlashgan pul fondlari", "Markazlashmagan pul fondlari", "Moliyaviy resurslar"], "a": 0}, {"q": "Moliyaning subyektlari to’liq keltirilgan javobni ko’rsating.", "o": ["Korxonalar, tashkilotlar, firmalar, turli xoʻjaliklar, moliyaviy vositachilar, xonadonlar, davlat idoralari", "korxonalar,turli xoʻjaliklar, moliyaviy vositachilar, xonadonlar,davlat idoralari", "turli xoʻjaliklar, moliyaviy vositachilar, xonadonlar,davlat idoralari", "korxonalar (firmalar), turli xoʻjaliklar, qimmqtli qog’ozlar, moliyaviy vositachilar, xonadonlar, davlat idoralari,"], "a": 0}, {"q": "Moliya quyidagilar o’rtasida vujudga keladigan pul munosabatlarini ifodalaydi:", "o": ["byudjet tizimiga soliqlarni to’lash va xarajatlarni byudjetdan moliyalashtirish davomida korxona va davlat o’rtasida", "markazlashtirilgan pul mablag’lari fondlaridan foydalanish jarayonida korxonalar o’rtasida", "korxonalar va fuqarolar o’rtasida byudjet mablag’larini shakllantirish jarayonida", "qiymatning tovar shaklidagi harakatiga bog’liq bo’lmasdan, aksincha, real pullarning harakatiga"], "a": 0}, {"q": "Siyosat davlat faoliyatining...", "o": ["barcha yo’nalishlarini qamrab oladi", "ayrim yo’nalishlarini qamrab oladi", "ayrim yo’nalishlarini qamrab olmaydi", "faqat siyosiy yo’nalishlarini qamrab oladi"], "a": 0}, {"q": "Quyidagilarni qaysi biri byudjet siyosatiga taaluqli emas?", "o": ["pul fondlari va daromadlarni shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "byudjet xarajatlar qismining tarkibiy tuzilishi, turli darajadagi byudjetlar o‘rtasida xarajatlarni taqsimlash orqali ifodalanadi", "davlat qarzini boshqarish, byudjet defitsitini qoplash yo‘llarini aniqlash orqali ifodalanadi", "byudjetda konsentratsiya qilinadigan (to‘planadigan) YaIM hissasini aniqlash, mamlakat yuqori va quyi organlarining o‘zaro munosabatlari orqali ifodalanadi"], "a": 0}, {"q": "Soliq siyosatining asosiy vazifasi nimalardan iborat?", "o": ["Soliq yukini kamaytirish", "Soliqlarni byudjetdagi ulushini ko‘paytirish", "Soliq imtiyozlarini joriy etish", "Soliq turlarini ko‘paytirish"], "a": 0}, {"q": "Mamlakat iqtisodiyotidagi soliq yuki qanday aniqlanadi?", "o": ["Moliya yilidagi soliqlar miqdorini mamlakat YaIM miqdoriga nisbati orqali", "Moliya yilidagi byudjet daromadlarini mamlakatdagi soliqlar miqdoriga nisbati orqali", "Mamlakatda yaratilgan mahsulotlar hajmini davlat byudjeti daromadlariga nisbati", "Soliq stavkalarini hisobga olgan holda"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaviy siyosatning tarkibiy qismiga kirmaydi?", "o": ["inflyatsion siyosat", "kredit siyosati", "sotsial moliyaviy siyosat", "byudjet-soliq siyosati"], "a": 0}, {"q": "Kredit siyosati natijasida kreditning arzonlashuvi nimalarga olib keladi?", "o": ["Takror ishlab chiqarish jarayoni subyektlari daromadlarining oshishiga", "Iqtisodiyotni izdan chiqishiga", "Byudjet daromadlarini kamayishiga", "Ishsizlikni ortisniga"], "a": 0}, {"q": "Sotsial moliyaviy siyosat Konstitutsiyaga muvofiq ...", "o": ["mamlakat aholisining huquqlarini moliyaviy jihatdan ta’minlash bilan bog’liq", "mamlakat ishchi va xizmatchilarining huquqlarini moliyaviy jihatdan ta’minlash bilan bog’liq", "mamlakat yoshlarining huquqlarini moliyaviy jihatdan ta’minlash bilan bog’liq", "mamlakat nafaqaxo’rlarining huquqlarini moliyaviy jihatdan ta’minlash"], "a": 0}, {"q": "Moliyaviy siyosat -", "o": ["iqtisodiy siyosatning tarkibiy qismi bo‘lib, moliyaviy resurslarni (manbalarni) jalb etish, ularni taqsimlash, ishga solish va foydalanishga yo‘naltirilgan barcha chora-tadbirlar yig‘indisi.", "markazlashgan va markazlashmagan fondlarni tashkil etish, taqsimlash va sarflash.", "davlatning vazifalari va funktsiyalari ham o‘zgartirish", "milliy xo‘jalik taraqqiyotida davlatning rolini oshirish"], "a": 0}, {"q": "Moliyaviy rejalashtirishning qanday turlari bo‘lishi mumkin?", "o": ["strategik moliyaviy rejalashtirish; joriy moliyaviy rejalashtirish", "taktik moliyaviy rejalashtirish; joriy moliyaviy rejalashtirish", "strategik moliyaviy rejalashtirish; muvozanatli moliyaviy rejalashtirish", "balansli moliyaviy rejalashtirish; joriy moliyaviy rejalashtirish"], "a": 0}, {"q": "Umumiy va eng oddiy ko‘rinishda, moliyaviy rejalashtirish deyilganda ...", "o": ["moliyaviy rejalarni tuzish va amalga oshirish jarayoni nazarda tutiladi", "moliyaviy rejalarni amalga oshirish jarayoni nazarda tutiladi", "moliyaviy rejalarni tuzish jarayoni nazarda tutiladi", "moliyaviy rejalarni tuzish va amalga oshirish jarayoni nazarda tutilmaydi"], "a": 0}, {"q": "Moliyaviy siyosatni ishlab chiqishda quyidagilardan qaysi birining bo‘lishi ahamiyatga ega emas?", "o": ["ijtimoiy ehtiyojlar va ularni qondirish choralarini aniqlagan holda moliyaviy resurslardan foydalanish", "taqsimlash munosabatlarining subyektlarini tanlash, ya’ni moliyaviy resurslarning egalari va taqsimlovchilarini tanlash", "moliyaviy resurslarni shakllantirishning manbalari va metodlarini tanlash", "davlatning funksiyalariga bog‘liq ravishda davlat ixtiyoridagi moliyaviy resurslarning markazlashtirilish darajasini aniqlash"], "a": 0}, {"q": "Moliyaviy siyosatning asosiy maqsadi ...", "o": ["jamiyatning sotsial-iqtisodiy taraqqiyoti, aholi turmush darajasi va sifatini oshirish uchun moliyaviy sharoitlarni yaratishdir", "jamiyatning iqtisodiy taraqqiyoti, aholi turmush darajasi va sifatini oshirish uchun moliyaviy sharoitlarni yaratishdir", "jamiyatning sotsial taraqqiyoti, aholi turmush darajasi va sifatini oshirish uchun moliyaviy sharoitlarni yaratishdir", "jamiyatning ijtimoiy taraqqiyoti va aholi turmush darajasini oshirish uchun moliyaviy sharoitlarni yaratishdir"], "a": 0}, {"q": "Moliyaviy siyosatning mazmuni...", "o": ["u qamrab olishi mumkin bo‘lgan moliyaviy munosabatlar rivojlanishi yo‘nalishlarining umumiy kompleksi bilan belgilanadi", "u qamrab olishi mumkin bo‘lgan ijtimoiy munosabatlar rivojlanishi yo‘nalishlarining xususiy kompleksi bilan belgilanadi", "u qamrab olishi mumkin bo‘lgan iqtisodiy munosabatlar rivojlanishi yo‘nalishlarining umumiy kompleksi bilan belgilanadi", "u qamrab olishi mumkin bo‘lgan siyosiy munosabatlar rivojlanishi yo‘nalishlarining xususiy kompleksi bilan belgilanadi"], "a": 0}, {"q": "Nazariya va amaliyotda moliyaviy bashoratlash ikkiga ajratiladi:", "o": ["o‘rta muddatli (5-10 yillik) moliyaviy bashoratlash; uzoq muddatli (10 yildan ortiq) moliyaviy bashoratlash", "o‘rta muddatli (3 yilgacha) moliyaviy bashoratlash; uzoq muddatli (5 yilgacha) moliyaviy bashoratlash", "o‘rta muddatli (5-7 yillik) moliyaviy bashoratlash; uzoq muddatli (10 yilgacha) moliyaviy bashoratlash", "o‘rta muddatli (7-10 yillik) moliyaviy bashoratlash; uzoq muddatli (10 yildan ortiq) moliyaviy bashoratlash"], "a": 0}, {"q": "Nodavlat moliyaviy nazorati nechta turga bo‘linadi?", "o": ["uchga bo‘linadi: ichki (firma ichidagi), jamoatchilik, mustaqil auditorlik", "ikkiga bo‘linadi: tashqi va auditorlik nazorati", "ikkiga bo‘linadi: ichki (firma ichidagi) va tashqi (auditorlik)", "ikkiga bo‘linadi: firma ichidagi va korporativ moliyaviy nazarat"], "a": 0}, {"q": "Notijorat asosda xo‘jalik yuritishning asosiy xususiyatlariga quyidagilardan qaysi biri kirmaydi?", "o": ["moliyaviy bozorning resurslaridan foydalangan holda investitsiyalashtirish uchun zarur bo‘lgan mablag‘larni jalb etish", "e’lon qilingan maqsadlarga erishish uchun olingan foydadan vosita sifatida foydalanish", "faoliyatning foyda olishga emas, balki ma’lum bir missiyaga erishishga yo‘naltirilganligi", "bozor xo‘jaligining iqtisodiy samaradorligi va faoliyatning sotsial samaradorligini birgalikda qo‘shib olib borish"], "a": 0}, {"q": "Pul siyosati orqali qanday vazifalar amalaga oshiriladi?", "o": ["muomaladagi pul miqdori tovarlar massasi miqdoriga mos kelmagan sharoitda pul massasining yetmagan qismini qog‘oz pullar hisobidan yoki xorijiy valyuta hisobidan to‘ldirish", "emissiya qilinayotgan pul miqdori tovarlar massasi miqdoriga mos kelmagan sharoitda xorijiy valyuta hisobidan to‘ldirish", "tovar ishlab chiqarishni chegaralash", "mamlakatda xorijiy valyutaning muomalada bo‘lishiga ruxsat bermaslik"], "a": 0}, {"q": "Byudjetga tushishiga qarab soliqlar qanday turlarga ajaratiladi?", "o": ["umumdavlat va mahalliy soliqlar", "to‘g‘ri soliqlar, egri soliqlar", "o‘z daromadlari va tartibga soluvchi daromadlari", "mol-mulk solig‘i va resurs to‘lovlari"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaning xarakterli belgisi hisoblanadi?", "o": ["markazlashtirilgan va markazlashtirilmagan pul fondlarini taskil etish", "moliya tizimining mavjudligi", "pulni tovarga ayrboshlanishi", "nazoratning mavjudligi"], "a": 0}, {"q": "Quyidagilardan qaysi biri Respublika byudjeti daromadlari hisoblanmaydi?", "o": ["mahalliy hokmiyat organlariga qarashli mulkdan foydalanishdan olingan daromadlar", "rezident-yuridik shaxslarga va chet el davlatlariga berilgan byudjet ssudalarini qaytarish hisobiga berilgan to‘lovlar", "davlat moliyaviy va boshqa aktivlarini joylashtirilishi, foydalanishga berilishi va sotilishidan olingan daromadlar", "yuridik va jismoniy shaxslardan, shuningdek, chet el davlatlaridan kelgan qaytarilmaydigan pul tushumlari"], "a": 0}, {"q": "Sotsial moliyaviy siyosatning tarkibi to’liq ko’rsatilgan javobni aniqlang.", "o": ["pensiya siyosati, immigratsion siyosat, aholi ayrim sotsial guruhlariga moliyaviy yordam ko’rsatish siyosati", "pensiya siyosati, emmigratsion siyosat, aholi ayrim sotsial guruhlariga moliyaviy yordam ko’rsatish siyosati", "pensiya siyosati, immigratsion siyosat", "immigratsion siyosat, aholi ayrim sotsial guruhlariga moddiy yordam ko’rsatish siyosati"], "a": 0}, {"q": "Moliya tizimining har bir sohasi...", "o": ["pul fondlari va daromadlarni shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "daromadlarni shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "pul fondlari va daromadlarni shakllantirishning konkret metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi", "pul fondlarini shakllantirishning konkret shakllari va metodlariga bog‘liq ravishda bir necha bo‘g‘inlardan tashkil topadi"], "a": 0}, {"q": "Moliya tizimining sohalarini ko’rsating.", "o": ["Davlat moliyasi va mahalliy moliya, xo’jalik yurituvchi subyektlar moliyasi", "Davlat byudjeti, davlat krediti", "Tijorat va notijorat korxonalari moliyasi", "Sug’urta va tashkilotlar moliyasi"], "a": 0}, {"q": "Moliya tizimining davlat moliyasiga tegishli bo’g’nilarini ko’rsating.", "o": ["Davlat byudjeti, maqsadli nobyudjet fondlar, davlat krediti", "Davlat korxonalari moliyasi va mahalliy moliya,", "Tijorat korxonalari moliyasi, moliyaviy vositachilar moliyasi", "Respublika va mahalliy byudjetlar"], "a": 0}, {"q": "O‘zbekiston Respublikasi Byudjet kodeksida davlat byudjetiga qanday ta’rif berilgan?", "o": ["Davlat byudjeti davlatning vazifa va funksiyalarini moliyaviy jihatdan ta’minlash uchun mo’ljallangan markazlashgan pul jamg‘armasi.", "Davlat pul mablag‘larining markazlashtirilgan jamg‘armasi bo‘lib, unda daromadlar manbalari va ulardan tushumlar miqdori, aniq maqsadlar uchun ajratiladigan mablag‘lar sarfi yo‘nalishlari va miqdori nazarda tutiladi.", "Davlatning asosiy moliyaviy rejasi bo‘lib, unda moliya yili mobaynida daromadlar va xarajatlar miqdori aks etadi.", "Davlatning o‘z vazifa va funksiyalarini moliyaviy ta’minlash maqsadida ma’lum vaqt oralig‘ida (yil, chorak, oy) vujudga keltiradigan asosiy moliyaviy rejasidir."], "a": 0}, {"q": "Davlat moliyasining mustaqil bo‘g‘ini sifatida davlat krediti...", "o": ["davlat, yuridik va jismoniy shaxslar o‘rtasidagi pul munosabatlarining o‘ziga xos alohida shaklidan iboratdir", "byudjet daromadlarini ko‘paytirish maqsadida jalb etiladi", "YaIMni iste’mol qilishning qiymat proportsiyalarini kuzatish shakli", "byudjet ijrosini profitsit bilan bajarishga imkon beradi"], "a": 0}, {"q": "Davlat tomonidan tartibga solinish darajasiga qarab xarajatlar qanday guruhlarga bo‘linadi?", "o": ["me’yorlashtiriladigan xarajatlar, me’yorlashtirilmaydigan xarajatlar", "to‘g‘ri xarajatlar, egri xarajatlar", "ishlab chiqarish va realizatsiya bilan bog‘liq bo‘lgan xarajatlar, realizatsiyadan tashqari xarajatlar", "doimiy xarajatlar, o‘zgaruvchan xarajatlar"], "a": 0}], [{"q": "Davlatning oliy moliyaviy nazorat organi qaysi?", "o": ["O‘zbekiston Respublikasi Hisob Palatasi", "Davlat soliq qo‘mitasi", "Davlat bojxona qo‘mitasi", "Davlat moliyaviy nazorat inspeksiyasi"], "a": 0}, {"q": "Davlat byudjetining daromadlari qanday tartibda klassifikatsiya qilinadi?", "o": ["bevosita soliqlar, bilvosita soliqlar, resurs to‘lovlari va mol-mulk solig‘i, boshqa daromadlar", "soliqli daromadlar va soliqsiz daromadlar", "biriktirilgan daromadlar va tartibga soluvchi daromadlar", "to‘g‘ri soliqlar va egri soliqlar, resurs to‘lovlari va mol-mulk solig‘i"], "a": 0}, {"q": "Korxona moliyaviy siyosatining asosiy maqsadi tog‘ri berilgan javobni aniqlang.", "o": ["korxona iqtisodiy salohiyatini oshirish va barqaror o‘sish sur’atlariga erishish", "korxonaning bozor qiymatini minimallashtirish", "byudjet daromadlarini ko‘paytirish", "iqtisodiyotni rivojlanishi"], "a": 0}, {"q": "Mamlakatning moliyaviy resurslari o‘sishining asosiy sharti berilgan javobni aniqlang.", "o": ["MDning ortishi (ko‘payishi)dir", "YaIMning ortishi (ko‘payishi)dir", "Tushumning ortishi (ko‘payishi)dir", "Foydaning ortishi (ko‘payishi)dir"], "a": 0}, {"q": "Moliya -", "o": ["pul fondlarini shakllantirish, taqsimlash va undan foydalanish bilan bog‘liq iqtisodiy munosabatlar yig‘indisi", "pulli munosabatlarni tartibga soladi", "pul fondlarini ifoda etadi", "pulli munosabatlarni ifodalaydi"], "a": 0}, {"q": "Moliya qanday sharoitda paydo bo‘ldi?", "o": ["Moliya davlatning vujudga kelishi va uning resurslarga bo‘lgan ehtiyojining rivojlanishi bilan doimiy (uzluksiz) tovar-pul munosabatlari sharoitida", "Pul fondlariga ehtiyoj sezilganda", "Pul munosabatlari sharoitida", "Kam xarajat qilib eng yuqori natijalarga erishish, moliya-xo‘jalik faoliyatini yanada yaxshilashda xo‘jalik yurituvchi subyektlar har bir xodimi va jamoasining moddiy manfaatdorligi hamda qiziquvchanligini oshirish vazifalariga bo‘ysundirilganda"], "a": 0}, {"q": "Moliya tizimi bu -", "o": ["davlat va korxonalarning pul fondlarini shakllantirish, taqsimlash va foydalanish borasidagi shakl va metodlar to‘plami", "moliya tizimi bo‘g‘nilarining yig‘indisidir", "fondlarini shaklantirish, taqsimlash va foydalanish munosabati", "moliyaviy siyosatni amalga oshirish vositasi"], "a": 0}, {"q": "Moliya vazirligi mamlakat miqyosida...", "o": ["yagona moliyaviy, byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi", "xilma-xil moliyaviy, byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi", "xilma-xil byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi", "yagona byudjet, soliq va valyuta siyosatining amalga oshirilishini ta’minlaydi"], "a": 0}, {"q": "Moliya vazirligining asosiy vazifalari tog‘ri va to‘liq berilgan javobni ko‘rsating.", "o": ["yagona davlat moliya siyosatini ishlab chiqish va uni amalga oshirish; davlat byudjetining loyihasini tuzish va uning ijrosini ta’minlash", "yagona davlat moliya siyosatini amalga oshirish; davlat byudjetining ijrosini ta’minlash", "yagona davlat moliya siyosatini ishlab chiqish; davlat byudjetining loyihasini tuzish", "yagona davlat moliya siyosatini ishlab chiqish va uni amalga oshirish; davlat byudjetining ijrosini ta’minlash"], "a": 0}, {"q": "Moliya vazirligining muhim bo‘linmasi g‘aznachilik tizimi bo‘lib, u ...", "o": ["davlat byudjetining kassa ijrosini ta’minlashda mas’uldir", "davlat byudjetining reja ijrosini ta’minlashda mas’uldir", "davlat byudjetining haqiqatdagi ijrosini ta’minlashda mas’uldir", "davlat byudjetining foydali ijrosini ta’minlashda mas’uldir"], "a": 0}, {"q": "Moliya YaIMni taqsimlashning turli bosqichlariga xizmat qilib, uni...", "o": ["birlamchi taqsimlashda va qayta taqsimlashda ishtirok etadi", "qayta taqsimlashda ishtirok etadi", "birlamchi taqsimlashda ishtirok etadi", "nazorat qilishda ishtirok etadi"], "a": 0}, {"q": "Moliyaviy bashoratlash ...", "o": ["moliyaviy rejalarni tuzish bosqichidan oldin sodir bo‘ladi", "moliyaviy rejalarni tuzish bosqichidan keyin sodir bo‘ladi", "moliyaviy rejalarni tuzish bosqichi bilan birgalikda sodir bo‘ladi", "moliyaviy rejalarni amalga oshirish bosqichi sodir bo‘ladi"], "a": 0}, {"q": "Moliyaviy boshqaruv -", "o": ["boshqariladigan obyektlar va boshqariluvchi subyektlar tizimlarining yagonaligidan iborat", "ma’lum bir natijaga erishishni ko‘zda tutish", "moliyaviy institutlarni pul munosabatlari ustidan boshqarish", "moliya tizimini boshqarishdan iborat"], "a": 0}, {"q": "Xalqaro moliya munosabatlarining subyektlari kimlar hisoblanadi?", "o": ["Xalqaro institutlar, davlatlar, jahon moliya bozorlari", "Pul oqimlari, kredit vositalari oqimlari", "Mamlakatlar o‘trasidagi barcha moliyaviy munosabatlar", "Transmilliykorporatsiyalar"], "a": 0}, {"q": "Moliyaviy boshqaruv tizimining ta’sir instrumentlari berilmagan javobni aniqlang.", "o": ["taqsimlash va nazorat", "moliyaviy rejalashtirish, bashortalash", "moliyaviy nazorat, dasturlashtirish", "moliyaviy tartibga solish, moliyaviy qonunlarni qabul qilish"], "a": 0}, {"q": "Moliyaviy boshqaruvning konkret metodlari va shakllari tarkibiga kirmaydigan javobni belgilang.", "o": ["tashqi moliyaviy munosabatlarni hisobga olish", "moliyaviy tartibga solish, moliyaviy nazorat", "moliyaviy qonunlar (qonunchilik)ni qabul qilish, moliyaviy resurslarni jalb qilish metodlari tizimi", "moliyaviy rejalashtirish; bashoratlash (prognozlashtirish), dasturlashtirish"], "a": 0}, {"q": "Moliyaviy boshqaruvning markaziy organi ...", "o": ["Moliya vazirligi va uning joylardagi organlari hisoblanadi", "Markaziy bank va uning joylardagi organlari hisoblanadi", "Davlat soliq qo‘mitasi va uning joylardagi organlari hisoblanadi", "G‘aznachilik va uning joylardagi organlari hisoblanadi"], "a": 0}, {"q": "Moliyaviy nazorat ...", "o": ["ham davlatning va ham boshqa barcha iqtisodiy subyektlarning manfaatlari hamda huquqlarini ta’minlashga qaratilgan", "faqat barcha iqtisodiy subyektlarning manfaatlari va huquqlarini ta’minlashga qaratilgan", "faqat davlatning manfaatlari va huquqlarini ta’minlashga qaratilgan", "faqat davlatning va boshqa barcha iqtisodiy subyektlarning manfaatlari va huquqlarini ta’minlashga qaratilmagan"], "a": 0}, {"q": "Moliyaviy nazorat ...", "o": ["moliya funksiyalarining amalga oshirilish shakli bo‘lib xizmat qiladi", "mohiyatining amalga oshirilish shakli bo‘lib xizmat qiladi", "moliya tizimining amalga oshirilish shakli bo‘lib xizmat qiladi", "moliya funksiyalarining amalga oshirilish shakli bo‘lib xizmat qilmaydi"], "a": 0}, {"q": "Moliyaviy nazoratni amalga oshirish borasida Hisob Palatasining bosh maqsadi nimadan iborat?", "o": ["davlat mablag‘larining sarflanishi ustidan umumiy nazoratni o‘rnatish", "XYSlarimablag‘larning sarflanishi ustidan umumiy nazoratni o‘rnatish", "davlat mablag‘larining sarflanishi ustidan xususiy nazoratni o‘rnatish", "xo‘jalik yurituvchi subyektlar mablag‘larining sarflanishi ustidan xususiy nazoratni o‘rnatish"], "a": 0}, {"q": "Moliyaviy rejalashtirish nima?", "o": ["moliyaviy resurslarning balansliligini va prorportsionalliligini ta’minlashga qaratilgan faoliyat", "umumiy va oddiy ko‘rinishda, moliyaviy rejalarni amalga oshirish jarayoni", "pul mablag‘laridan iqtisod qilib, tejab-tergab foydalanish hisobidan korxonaning foydasini oshirish", "umumiy va oddiy ko‘rinishda moliyaviy rejalarni tuzish jarayoni"], "a": 0}, {"q": "Moliya tizimining xo’jalik yurituvchi subyektlar moliyasi sohasiga tegishli bo’g’nilarini ko’rsating.", "o": ["Tijorat korxonalari moliyasi, moliyaviy vositachilar moliyasi", "Davlat korxonalari moliyasi va mahalliy moliya", "Davlat byudjeti, davlat krediti", "Maqsadli nobyudjet fondlar moliyasi"], "a": 0}, {"q": "Tijorat korxonalari va tashkilotlari....", "o": ["moliyaviy mustaqillikka ega", "foydani ishlab chiqarishni kengaytirishga yo‘naltirmaydilar", "ijtimoiy-sotsial fondlarni shakllantiradilar", "xarajatlarni turli fondlarga taqismlaydilar"], "a": 0}, {"q": "Notijorat asosida faoliyat yurituvchi tashkilotlar moliyasi moliya tizimining qaysi sohasiga tegishli?", "o": ["Xo’jalik yurituvchi subyektlar moliyasi", "Davlat korxonalari moliyasi va mahalliy moliya", "Tijorat korxonalari moliyasi", "Moliyaviy vositachilar moliyasi"], "a": 0}, {"q": "Davlat byudjeti taqchilligini moliyalashtirish manbalari", "o": ["taqchillikni moliyalashtirishning ichki va tashqi manbalari", "taqchillikni moliyalashtirishning qarzli va qarzsiz manbalari", "taqchillikni moliyalashtirishning inflyatsion va noinflyatsion manbalari", "taqchillikni moliyalashtirishning kredit va qarz manbalari"], "a": 0}, {"q": "Davlat byudjeti taqchilligi nima?", "o": ["Davlat byudjeti xarajatlarning daromadlardan oshib ketishi", "Xarajatlar va daromadlarning balansliligi", "Daromadlarning xarajatlardan oshib ketishi", "Obyektiv holat bo‘lib, ahamiyatsizdir"], "a": 0}, {"q": "YaIM va MDni qayta (ikkilamchi) taqsimlash kimlar o’rtasidagi moliyaviy munosabatlar doirasida sodir bo’ladi?", "o": ["Davlat va xo’jalik yurituvchi subyektlar", "Rahbarlar va xodimlar", "Korxona va aholi", "Sug’urta va bank tizimi"], "a": 0}, {"q": "Davlat kreditining funksiyalarini ko’rsating.", "o": ["Taqsimlash, nazorat va tartibga solish", "Tartibga solish, nazorat, tashkillashtirish", "Nazorat, tashkillashtirish, rag’batlantirish", "Tashkillashtirish, rag’batlantirish"], "a": 0}, {"q": "Joylashtirilishiga qarab davlat qarzlari qanday turlarga bo’linadi?", "o": ["Davlatning ichki va tashqi qarzlari", "Bozorli va bozorsiz qarzlar", "Markaziy va hududiy boshqaruv organlari tomonidan joylashtiriladigan qarzlar", "Moliyaviy bozorlar"], "a": 0}, {"q": "Moliyaviy vositachilarning asosiy vazifasi to’g’ri ko’rsatilgan javobni aniqlang.", "o": ["moliya bozoridagi mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash", "banklardagi mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash", "sug’urta bozoridagi mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash", "axborot xizmatlarini ko‘rsatuvchi firmalar mijozlarni shaxsan ular ishtirokidagi operatsiyalaridan ko‘ra yuqoriroq samara beradigan moliyaviy mahsulot va xizmatlar bilan ta’minlash"], "a": 0}], [{"q": "Ixtisoslashgan moliyaviy vositachilarga xos bo‘lgan deyarli barcha moliyaviy funksiyalarni bajaruvchi tashkilotlar ………… deb ataladi.", "o": ["universal banklar", "tijorat banklar", "investitsion banklar", "pensiya fondlari"], "a": 0}, {"q": "Quyidagilarni qaysi biri moliyaviy nazorat usullari hisoblanmaydi?", "o": ["taqsimlash, nazorat", "tekshiruv, kuzatuv", "tahlil, taftish", "nadzor, tadqiq etish"], "a": 0}, {"q": "To’liq qamrab olish, universal xarakterdalik nimani angalatadi?", "o": ["Davlat byudjeti nazorat funksiyasining xususiyatini", "Davlat byudjeti taqsimlash funksiyasining xususiyatini", "Davlat byudjetining ahamiyatini", "Davlat byudjetining xarakterli xususiyatini"], "a": 0}, {"q": "………… – bu pul massasining tovar aylanmasi ehtiyojlariga nisbatan ortib ketishi natijasida pul birligining qadrsizlanishi va shunga mos ravishda tovar narxlarining o’sishidir.", "o": ["Inflatsiya", "Devalivatsiy", "Revalivatsiya", "Bifilatsiya"], "a": 0}, {"q": "O‘zbekistonda moliya yili qanday muddatni o’z ichiga oladi?", "o": ["1 yanvardan 31 dekabrgacha", "1 oktyabrdan 31 sentyabrgacha", "1 apreldan 31 martgacha", "1 iyulndan 31 iyungacha"], "a": 0}, {"q": "......ning bosh maqsadi joylashtirilgan kapitaldagi foyda normasini oshirish maqsadida davlatga ajratmalarni minimallashtirishdan iborat.", "o": ["Nodavlat moliyaviy nazorati", "Byudjet nazorati", "Bojxona nazorati", "Davlat moliyaviy nazorati"], "a": 0}, {"q": "Joriy nazorat …. …. hisoblanadi.", "o": ["moliyaviy nazorat o‘tkazish shakli", "moliyaviy nazorat turi", "moliyaviy nazoratni obyektlarga ko‘ra turi", "moliyaviy nazorat usuli"], "a": 0}, {"q": "Moliyaviy nazorat subyektlarini ko‘rsating.", "o": ["Moliya organlari", "Ta’lim muassasalari", "Tibbiyot muassasalari", "Korxonalar"], "a": 0}, {"q": "O‘zbekiston Respublikasi davlat byudjeti daromadlari tarkibida eng yuqori ulushni tashkil etadi -", "o": ["bilvosita soliqlar", "bevosita soliqlar", "resurs to‘lovlari va mol-mulk solig‘i", "daromaddan olinadigan soliqlar"], "a": 0}, {"q": "Mahalliy byudjetlar loyihasi kim tomonidan tasdiqlanadi?", "o": ["Qoraqalpog‘iston Respublikasi Jo‘qorg‘i Kengesi, xalq deputatlari viloyatlar va Toshkent shahar, tumanlar va shaharlar Kengashlari", "O‘zbekiston Respublikasi Oliy Majlisi", "Qoraqalpog‘iston Respublikasi Vazirlar Kengashi, viloyatlar va Toshkent shahar, tumanlar va shaharlar hokimlari", "O‘zbekiston Respublikasi Moliya vazirligi"], "a": 0}, {"q": "Moliyaviy vositachilarning moliyaviy xizmatlari nimalardan iborat?", "o": ["hisob raqamlarni ochish, tijorat qarzlari va ipoteka kreditlarini berish, sug’urta shartnomalarining keng doirasiga hamda o’zaro jamg’armalarda ishtirok etishiga yo’l ochish", "mahsulot ishlab chiqarish, yetkazib berish, hisob raqamlarni ochish, tijorat qarzlari va ipoteka kreditlarini berish", "mahsulot ishlab chiqarish, yetkazib berish, sug’urta shartnomalarining keng doirasiga hamda o’zaro jamg’armalarda ishtirok etishiga yo’l ochish", "ish haqi berish, homiylik qilish, hisob raqamlarni ochish, tijorat qarzlari va ipoteka kreditlarini berish"], "a": 0}, {"q": "Resurslarning moliyaviy resurslari ortiqcha bo’lgan iqtisodiy subyektlardan moliyaviy resurslari defitsit bo’lgan iqtisodiy subyektlarga oqib o’tishi nima deyiladi?", "o": ["moliyaviy oqim", "moliyaviy vositachilar", "xalqaro firma", "pul oqimi"], "a": 0}, {"q": "Byudjet buyurtmasi kim tomonidan tuziladi?", "o": ["Byudjet tashkiloti, byudjet mablag‘lari oluvchi va byudjet mablag‘larini taqsimlovchilar tomonidan", "O‘zbekiston Respublikasi Moliya vazirligi tomonidan", "Qoraqalpog‘iston Respublikasi Juqorg‘i Kengesi va tegishli hududiy hokimiyat organlari tomonidan", "O‘zbekiston Respublikasi Oliy Majlisi tomonidan"], "a": 0}, {"q": "Moliyaviy nazoratni amalga oshiruvchi subyektlariga ko‘ra qanday turlari mavjud?", "o": ["Umumdavlat, idoraviy, xo‘jalik ichidagi, jamoatchilik va mustaqil auditorlik moliyaviy nazorati", "Umumdavlat, umumilliy, ichki audit, jamoatchilik va mustaqil auditorlik moliyaviy nazorati", "Davlat, nodavlat, xo‘jalik ichidagi, va mustaqil auditorlik moliyaviy nazorati", "Nodavlat, notijorat, mahalliy, respublika darajasidagi, auditorlik moliyaviy nazorati"], "a": 0}, {"q": "Davlat moliyaviy nazoratining bosh maqsadi - …", "o": ["Davlat xazinasiga resurslarni tushurishni maksimallashtirish va davlat xarajatlarini minimallashtirishdan iborat", "Davlat byudjetiga resurslarni tushurishni va davlat byudjeti xarajatlarini minimallashtirishdan iborat", "Joylashtirilgan kapitaldagi foyda normasini maksimallashtirish va boshqaruv xarajatlarini minimallashtirishdan iborat", "Joylashtirilgan kapitaldagi foyda normasini maksimallashtirish va boshqa xarajatlarni minimallashtirishdan iborat"], "a": 0}, {"q": "Soliq, bojxona va byudjet nazorati qanday nazorat?", "o": ["Davlat moliyaviy nazorati", "Auditorlik moliyaviy nazorati", "Nodavlat moliyaviy nazorati", "Jamoatchilik moliyaviy nazorati"], "a": 0}, {"q": "Moliyaviy nazoratni amalga oshirishda qanday usullardan foydalaniladi?", "o": ["tekshirish, tadqiq etish, moliyaviy tahlil, monitoring, boshqaruv nazorati, taftish", "tekshirish, tadqiq etish, moliyaviy tahlil qilish, o’rganish, boshqarish, taftish", "tekshirish, tadqiq etish, tahlil etish, kuzatish va o’rganish, mavzuli va kompleks taftish", "yalpi va tanlanma tekshirish, kuzatish va o’rganish, mavzuli va kompleks taftish"], "a": 0}, {"q": "O‘zbekiston Respublikasi Konstitutsiyasining 78-moddasi 8-bandiga muvofiq O’zbekiston Respublikasi Oliy Majlisiga moliyaviy nazorat sohasida qanday vakolat berilgan?", "o": ["O’zbekiston Respublikasi Oliy Majlisi Vazirlar Mahkamasining taqdimoti bo’yicha mamlakat byudjetini qabul qiladi va uning ijrosi ustidan nazorat o’rnatadi", "O’zbekiston Respublikasi Oliy Majlisi Hisob palatasining taqdimoti bo’yicha mamlakat byudjetini qabul qiladi va uning ijrosi ustidan nazorat o’rnatadi", "O’zbekiston Respublikasi Oliy Majlisi Vazirlar Mahkamasining taqdimoti bo’yicha byudjetni muhokama qiladi, ko’rib chiqadi, qabul qiladi", "O’zbekiston Respublikasi Oliy Majlisi Hisob palatasining taqdimoti bo’yicha mamlakat byudjetini muhokama qiladi, ko’rib chiqadi, qabul qiladi"], "a": 0}, {"q": "O‘zbekiston Respublikasining “O’zbekiston Respublikasining Hisob Palatasi to’g’risida”gi O’RQ-546-son qonuni qachon qabul qilingan?", "o": ["2019 yil 1 iyulda", "2020 yil 1 dekabrda", "2018 yil 10 iyulda", "2002 yil 10 dekabrda"], "a": 0}, {"q": "O`zbekiston Respublikasi Hisob Palatasi qachon tashkil etilgan?", "o": ["O’zbekiston Respublikasi Prezidentining 2002-yil 27-iyundagi 3093-son farmoniga muvofiq", "O’zbekiston Respublikasi Vazirlar Mahkamasining 1992-yil 11-fevraldagi 59-son Qaroriga muvofiq", "O‘zbekiston Respublikasi Prezidentining 2005-yil 2-apreldagi PF-3592-son Farmoniga muvofiq", "O’zbekiston Respublikasi Vazirlar Mahkamasining 2012-yil 23-maydagi 143-son Qaroriga muvofiq"], "a": 0}, {"q": "Sug‘urta faoliyati bo‘yicha litsenziyani berish, bekor qilish ishlari qaysi organ tomonidan amalga oshiriladi?", "o": ["O’zbekiston Respublikasi Moiya vazirligi", "O’zbekiston Respublikasi Moiya vazirligi Davlat moliyaviy nazorat Departamenti", "O’zbekiston Respublikasi Vazirlar Mahkamasi", "O’zbekiston Respublikasi Davlat sug‘urta nazorati inspeksiyasi"], "a": 0}, {"q": "Amalga oshirish reglamenti bo’yicha moliyaviy nazoratning turlarini ko’rsting.", "o": ["tashabbuskorlik, majburiy", "dastlabki, joriy", "davlat, nodavlat", "umumdavlat, idoraviy"], "a": 0}, {"q": "Quyidagilardan qaysi biri moliyaviy bozorlar tarkibiga kirmaydi?", "o": ["xo’jalik buyumlari bozori", "pul bozori", "valyuta bozori", "kapital bozori"], "a": 0}, {"q": "Amalga oshirish vaqti bo’yicha moliyaviy nazoratning turlarini ko’rsting.", "o": ["dastlabki, joriy, yakuniy", "tashabbuskorli, majburiy", "davlat, nodavlat", "umumdavlat, idoraviy"], "a": 0}, {"q": "2022 yilda jamlanma byudjet tarkibida nechta davlat maqsadli jamg’armasi faoliyat yuritmoqda?", "o": ["23", "18", "7", "20"], "a": 0}, {"q": "Moliyaviy nazoratning asosiy maqsadi...", "o": ["qonun buzilishlarini oldini olish", "aybdorni jazolash", "byudjetni to’ldirish", "mablag’arni qayta undirish"], "a": 0}, {"q": "Jamoatchilik nazorati bu …dir.", "o": ["nodavlat tashkilotlar tomonidan olib boriladigan nazorat", "oliy darajadagi nazorat organlari nazorati", "ichki moliya bo‘limi tomonidan olib boriladigan nazorat", "hokimiyat tomonidan o‘tkaziladigan nazorat"], "a": 0}, {"q": "Vazirlik miqyosida o`tkaziladigan moliyaviy nazorat bu - …", "o": ["idoraviy nazorat", "hokimiyat nazorati", "jamoatchilik nazorati", "ichki nazorat"], "a": 0}, {"q": "Moliyaviy nazoratning sohalarini ko’rsting.", "o": ["davlat, nodavlat", "tashabbuskorli, majburiy", "ichki, tashqi", "umumdavlat, idoraviy"], "a": 0}, {"q": "Sug’urta mukofoti bu ……...?", "o": ["xizmat ko’rsatilgani uchun mijoz tomonidan to’lanadigan pullar", "sug’urta kompaniyasi foydasi", "sug’urta kompaniyasi tomonidan mijozga to’lanadigan pullar", "sug’urta bonuslari"], "a": 0}], [{"q": "Quyidagilardan qaysi biri moliyaviy hisobot turlariga kirmaydi?", "o": ["Vaqtinchalik smeta", "Balans", "Moliyaviy natijalar to’g’risida hisobot", "Pul oqimlari to’g’risida hisobot"], "a": 0}, {"q": "Pul oqimlari to’g’risidagi hisobotda nimalar aks etadi?", "o": ["Pul oqimlari to’g’risidagi hisobotda ma’lum davr ichida firmaning pul oqimlari kirimi va chiqimi aks ettiriladi", "Moliyaviy natijalar to’g’risidagi hisobotda ma’lum vaqt oralig’ida firma samaradorligiga umumiy baho beriladi", "Firma balansi uning muayyan vaqt oralig’idagi aktivlarini (va majburiyatlarini aks ettiradi", "Daromad va xarajatlarning balansi ko’rsatiladi"], "a": 0}, {"q": "Moliyaviy hisobotlarninig qanday asosiy turlari mavjud?", "o": ["Buxgalteriya balansi, moliyaviy natijalar to’g’risida hisobot, pul oqimlari to’g’risida hisobot", "Balans, asosiy vositalar to’g’risida hisobot, pul oqimlari to’g’risida hisobot", "Debitorlik va kreditorlik to’g’risida hisobot, moliyaviy natijalar to’g’rida hisobot, asosiy vositalar to’g’risida hisobot", "Debitorlik va kreditorlik to’g’risida hisobot, moliyaviy natijalar to’g’risida hisobot, pul oqimlari to’g’risida hisobot"], "a": 0}, {"q": "Foyda - bu kompaniyaning ………………", "o": ["daromadi va xarajatlari o’rtasidagi musbat farq", "daromadi va xarajatlari o’rtasidagi manfiy farq", "taqsimlanmagan daromad va kreditorlik qarzlari", "aylanma aktivlar va xarajatlari"], "a": 0}, {"q": "Moliyaviy operatsiyalar bajarilganidan so’ng davlat moliyaviy nazorat organlari tomonidan amalga oshiriladigan nazorat bu - ...", "o": ["yakuniy nazorat", "dastlabki nazorat", "joriy nazorat", "idoraviy nazorat"], "a": 0}, {"q": "Milliy valyutaning chet el valyutalariga yoki xalqaro hisob-kitob pul birliklariga nisbatan qadrining tushishi nima deb ataladi?", "o": ["devalivatsiya", "inflatsiya", "imobilizatsiya", "revalvatsiya"], "a": 0}, {"q": "Byudjet tashkilotlari moliya-xo’jalik faoliyatini taftish qilish yakunida qanday hujjat rasmiylashtiriladi?", "o": ["dalolatnoma", "bildirishnoma", "ma’lumotnoma", "xabarnoma"], "a": 0}, {"q": "Tijorat banklarida majburiy rezerv normasi kim tomonidan belgilanadi?", "o": ["Markaziy Bank", "Oliy Majlis", "Moliya Vazirligi", "Vazirlar Mahkamasi"], "a": 0}, {"q": "Moliyaviy operatsiyalar bajarilishi jarayonida g’aznachilik bo’linmalari, moliya organlari va davlat soliq xizmati organlari tomonidan amalga oshiriladigan nazorat bu - …", "o": ["joriy nazorat", "yakuniy nazorat", "dastlabki nazorat", "ichki nazorat"], "a": 0}, {"q": "Byudjet daromadlarini to‘g‘ri va o‘z vaqtida kelib tushishini nazorat qilish davlatning qaysi vakolatli organlari tomonidan amalga oshiriladi?", "o": ["O‘zbekiston Respublikasi Moliya vazirligi, O‘zbekiston Respublikasi Davlat Soliq Qo‘mitasi, O‘zbekiston Respublikasi Bojxona Qo‘mitasi", "O‘zbekiston Respublikasi Moliya vazirligi, O‘zbekiston Respublikasi Bojxona Qo‘mitasi", "O‘zbekiston Respublikasi Markaziy banki", "O‘zbekiston Respublikasi Soliq Qo‘mitasi"], "a": 0}, {"q": "Byudjet fondini shakllantirishda qanday tushunchadan foydalaniladi.", "o": ["Byudjetga to‘lovlar, davlat byudjetining daromadlari", "Soliqlar va majburiy yig‘imlar", "Moliyaviy resurslar va mablag‘lar", "Byudjetga tushumlar va daromadlar"], "a": 0}, {"q": "Byudjet siyosatining ustuvorligini...", "o": ["davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini yo‘naltirish tashkil etadi", "davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini shakllantirish tashkil etadi", "davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini iqtisod qilish tashkil etadi", "davlat siyosati aniqlab beradigan maqsadlarga erishish uchun pul resurslarini ko‘paytirish tashkil etadi"], "a": 0}, {"q": "Byudjet tizimining mohiyati tog‘ri berilgan qatorni ko‘rsating.", "o": ["Iqtisodiy munosabatlar va huquqiy me’yorlarga asoslangan hamda o‘zaro qonuniy bog‘liqlikda va aloqadorlikda bo‘lgan mamlakatning barcha byudjetlari yig‘indisi", "Moliya tizimining markaziy bo‘g‘ini", "Byudjet daromadlari va xarajatlarining yig‘indisi", "Markaziy byudjet va maxalliy byudjetlar yig‘indisi"], "a": 0}, {"q": "Pensiya siyosati ….. tarkibiy qismi hisoblanadi.", "o": ["ijtimoiy siyosatning", "byudjet siyosatining", "soliq siyosatining", "immigratsion siyosatning"], "a": 0}, {"q": "Shaxsiy sug`urtaning shakllarini ko`rsating.", "o": ["ixtiyoriy va majburiy;", "ixtiyoriy va xususiy;", "majburiy va umumiy;", "xususiy va majburiy;"], "a": 0}, {"q": "Moliyaviy operatsiyalar bajarilguniga qadar g’aznachilik bo’linmalari va moliya organlari tomonidan amalga oshiriladigan nazorat bu - ….", "o": ["dastlabki nazorat", "joriy nazorat", "yakuniy nazorat", "tashqi nazorat"], "a": 0}, {"q": "O’zbekiston Respublikasining davlat kafolatlarini rasmiylashtirish bo‘yicha vakolatli organ - ……………", "o": ["O‘zbekiston Respublikasi Moliya Vazirligi", "O‘zbekiston Respublikasi Hisob Palatasi", "O‘zbekiston Respublikasi Markaziy Banki", "O‘zbekiston Respublikasi Vazirlar Mahkamasi"], "a": 0}, {"q": "O‘zbekiston Respublikasi davlat byudjeti daromadlari tarkibida eng yuqori ulushni qaysi soliq tashkil etadi?", "o": ["QQS", "Aksiz", "Resurs to‘lovlari va mol-mulk solig‘i", "Daromaddan olinadigan soliqlar"], "a": 0}, {"q": "Bir valyutaga nisbatan boshqa bir valyutaning bahosini o’zgarishi………………. deb ataladi.", "o": ["valyuta kursi", "valyuta riski", "valyuta ayirboshlash", "valyuta sotuvi"], "a": 0}, {"q": "Muddati bir yildan kam bo&#39;lgan qarz majburiyatlari bozori qanday nomlanadi?", "o": ["pul bozori", "kapital bozori", "valyuta bozori", "fond bozori"], "a": 0}, {"q": "Moliya vazirligi G’aznachiligi qanday nazoratni amalga oshiradi ?", "o": ["Dastlabki va joriy moliyaviy nazoratni", "So‘nggi va yakuniy moliyaviy nazoratni", "Barcha moliyaviy nazoratlarni", "Navbatdagi moliyaviy nazoratni"], "a": 0}, {"q": "Byudjet tizimi byudjetlarini shakllantirish, ijro etish ustidan nazorat ...... hisoblanadi.", "o": ["davlat moliyaviy nazorati", "mahalliy moliyaviy nazorat", "nodavlat moliyaviy nazorati", "ichki moliyaviy nazorat"], "a": 0}, {"q": "Jalb qilinishiga ko’ra davlat qarzlari qanday qarzlarga bo’linadi?", "o": ["Ichki va tashqi qarzlari", "Bozorli va bozorsiz qarzlar", "Markaziy va hududiy boshqaruv organlari tomonidan joylashtiriladigan qarzlar", "Moliyaviy bozorlar"], "a": 0}, {"q": "Sug’urtaning funksiyalari to’g’ri ko’rsatilgan javobni ko’rsating", "o": ["Sug’urta fondini tashkil etish va undan foydalanish bilan bog’liq funksiyasi, nazorat funksiyasi", "Nazorat funksiyasi, qayta taqsimlash", "Taqsimlash va qayta taqsimlash, nazorat", "Sug’urta fondini tashkil etish funksiyasi, nazorat funksiyalari"], "a": 0}, {"q": "Uy xo’jaliklari moliyasi ....", "o": ["Markazlashmagan moliya", "Xo’jalik yurituvchi subyektlar moliyasining bir qismi", "Umumdavlat moliyasining bir qismi", "Davlat moliyasi tizimining tarkibiy qismi"], "a": 0}, {"q": "Uy xo‘jaligini xo‘jalik yuritishning mustaqil iqtisodiy va moliyaviy birligi sifatida ajartilishi qaysi mezonlar asosida amalga oshirilmog‘i lozim?", "o": ["Birgalikda yashash, umumiy byudjetning mavjudligi, iqtisodiy qarorlarni birga qabul qilish", "Birgalikda yashash va birgalikda qaror qabul qilish", "Birgalikda yashash va iqtisodiy qarorlarni birga qabul qilish", "Umumiy byudjetning mavdujligi va qaror qabul qilishning birgalikdaligi"], "a": 0}, {"q": "Uy xo‘jaliklari iqtisodiyotda tovarlar va xizmatlarni iste’mol qiluvchilar sifatida nimani belgilab beradi?", "o": ["Bozor talabini", "Bozor taklifini", "Bozor muvozanatini", "Hech narsani"], "a": 0}, {"q": "Davlat va uy xo‘jaliklari o‘rtasidagi moliyaviy munosabatlar qanday munosabatlarni ifodalaydi?", "o": ["Byudjet hamda nobyudjet fondlarni shakllantirish va ulardan foydalanishdagi munosabatlarni ifodalaydi", "Bank kreditlaridan foydalanishdagi munosabatlarni ifodalaydi", "Faqatgina pensiya olishdagi munosabatlarni ifodalaydi", "Ijtimoiy himoya qilishdagi munosabatlarni ifodalaydi"], "a": 0}, {"q": "O‘zbekiston Respublikasining “Byudjet kodeksi to‘g‘risida”gi Qonuni qachondan amaliyotga tatbiq etilgan?", "o": ["2014 yil 1 yanvardan", "1992 yil 29 dekabrdan", "1999 yil 3 sentyabrdan", "2013 yil 27 dekabrdan"], "a": 0}, {"q": "Qanday daromadlar uy xo‘jaligining nominal daromadlari deyiladi?", "o": ["Uy xo‘jaligi a’zolarining ma’lum davrdagi shaxsiy daromadlari majmuining puldagi ifodasiga", "Uy xo‘jaligi a’zolarining ma’lum davrdagi shaxsiy natural ko‘rinishdagi daromadlariga", "Uy xo‘jaligi a’zolarining ma’lum davrdagi moliyaviy aktivlaridan olingan daromadlari majmuiga", "Uy xo‘jaligi a’zolarining ma’lum davrdagi ish haqilari yig‘indisiga"], "a": 0}], [{"q": "Uy xo‘jaliklarining pul daromadlari manbai notog‘ri berilgan javobni belgilang.", "o": ["Tijorat banklari kreditlari", "Mehnat haqi va sotsial to‘lanmalar", "Tadbirkorlik faoliyatidan keluvchi daromadlar", "Mol-mulkdan keluvchi daromadlar"], "a": 0}, {"q": "Uy xo‘jaliklarining mulkdan olinadigan daromadlari notog‘ri berilgan javobni ko‘rsating.", "o": ["Ish haqi", "Foizlar", "Dividentlar", "Rentalar"], "a": 0}, {"q": "Aholining shaxsiy daromadlari qaysi ko’ratkichlar yordamida o’lchanadi?", "o": ["Nominal daromadlar, ega bo’lingan daromadlar va real daromadlar", "Hisoblangan nominal daromadlar va haqiqatda olingan nominal daromadlar", "Pul daromadlari va real daromadlar", "Ega bo’lingan va real ega bo’lingan daromadlar"], "a": 0}, {"q": "Byudjet kreditlarining umumiy hajmi kim tomonidan aniqlanadi?", "o": ["Moliya vazirligi tomonidan", "Vazirlar Mahkamasi tomonidan", "Markaziy bank tomonidan", "Hisob palatasi tomonidan"], "a": 0}, {"q": "Byudjet kreditlarining umumiy hajmi qachon aniqlanadi?", "o": ["Byudjet loyihasi tayyorlanayotgan paytda", "Byudjet tasdiqlanayotgan paytda", "Moliya yili boshlanmasdan oldin", "Byudjet loyihasi ko’rib chiqilayotgan paytda"], "a": 0}, {"q": "Davlat byudjeti ijrosi haqidagi hisobotni qaysi organ tayyorlaydi?", "o": ["Moliya vazirligi", "Hisob palatasi", "Vazirlar Mahkamasi", "Moliya bo‘limlari"], "a": 0}, {"q": "Byudjet profitsiti nima?", "o": ["Byudjet daromadlarining xarajatlardan ortishi", "Byudjet xarajatlarining daromadlaridan ortishi", "Byudjet daromadlarining xarajatlari bilan tengligi", "Byudjet daromaadlari va xarajatlari o’rtasidagi nisbat"], "a": 0}, {"q": "Moliyaviy resurslarining harakati, shakllanishi, taqsimlanishi va xalqaro moliya bozori institutlari hamda xalqaro institutlar va tashkilotlar tomonidan ishlatilishiga asoslangan tarkibi bo’yicha murakkab bo’lgan munosabatlar tizimidir bu...", "o": ["Xalqaro moliya munosabatlari", "Tashqi iqtisodiy faoliyat", "Moliyaviy globallashuv", "Jahon xo’jaligi"], "a": 0}, {"q": "Muayyan mamlakatning boshqa mamlakatlar bilan xalqaro mehnat taqsimoti, fan va ishlab chiqarishni ixtisoslashtirish hamda boshqa omillarga asoslangan ishlab chiqarish, savdo, siyosiy va boshqa xil munosabatlari bu….", "o": ["Tashqi iqtisodiy aloqalar", "Iqtisodiy globallashuv", "Xalqaro moliya munosabatlari", "Iqtisodiy integratsiya"], "a": 0}, {"q": "Tashqi iqtisodiy aloqalarga kirishgan, ularning afzalliklariga tayanib rivojlanib boruvchi iqtisodiyot bu...", "o": ["Ochiq iqtisodiyot", "Moliyaviy globallashuv", "Iqtisodiy globallashuv", "Iqtisodiy integratsiya"], "a": 0}, {"q": "Eksport kvotasi nima?", "o": ["Mamlakat eksportining YaIM dagi aniq nisbati", "Tovarlarni tashqaridan sotib olib mamlakat ichiga kiritish", "Eksport va import o’rtasidagi farq", "To’g’ri javob yo’q"], "a": 0}, {"q": "Jahondagi iqtisodiy, ijtimoiy va siyosiy harakatlarning umumbashariy tus olishi bu...", "o": ["Globalizatsiya", "Integratsiya", "Ochiq iqtisodiyot", "Mehnat migratsiyasi"], "a": 0}, {"q": "Xalqaro valyuta fondi (XVF) va Xalqaro tiklanish va taraqqiyot banki qachon va qayerda tashkil etilgan?", "o": ["1944-yilda AQShda", "1949-yilda Germaniyada", "1951-yilda Xitoyda", "1974-yilda Angolada"], "a": 0}, {"q": "Jahon Bankining asosiy maqsadi –", "o": ["iqtisodiy o’sish davrini boshdan kechirayotgan rivojlanayotgan mamlakatlarni kreditlash yo’li bilan kambag’allik darajasini pasaytirish hisoblanadi.", "rivojlanayotgan mamlakatlarga kredit ajratish yo’li bilan ishlab chiqarishni barqarorlashtirish hisoblanadi", "rivojlanayotgan mamlakatlardagi tijorat banklari faoliyatini tartibga solish hisoblanadi", "iqtisodiy o’sish davrini boshdan kechirayotgan rivojlanayotgan mamlakatlarda bank-moliya tizimini barqarorlashtirish hamda uni tartibga solish hisoblanadi."], "a": 0}, {"q": "“Jahon banki” guruhiga quydagi tashkilotlardan qaysi biri kirmaydi?", "o": ["Xalqaro valyuta jamg‘armasi", "Xalqaro tiklanish va taraqqiyot banki, Xalqaro rivojlanish assotsiatsiyasi", "Xalqaro moliya korporatsiyasi", "Investitsiyalarni kafolatlash bo‘yicha ko‘p tomonlama agentlik, Xalqaro investitsion bahslarni tartibga solish markazini"], "a": 0}, {"q": "Osiyo Taraqqiyot Banki (OTB) –", "o": ["Osiyo va Tinch okeani mintaqasi mamlakatlarining rivojlanish loyihalari uchun uzoq muddatga kredit ajratish bilan shug’ullanadigan yirik davlatlararo moliya institutlaridan biri hisoblanadi.", "Osiyo mintaqasi mamlakatlarining rivojlanish loyihalari uchun uzoq muddatga kredit ajratish bilan shug’ullanadigan davlatlararo moliya institutlaridan biri hisoblanadi.", "Osiyo okeani mintaqasi mamlakatlarida ishlab chiqarishni rivojlantirish uchun qisqa muddatga kredit ajratish bilan shug’ullanadigan yirik davlatlararo moliya institutlaridan biri hisoblanadi.", "Osiyo va Tinch mintaqasi mamlakatlarining rivojlanish loyihalari investisiyalar ajratish bilan shug’ullanadigan moliya institutlaridan biri hisoblanadi."], "a": 0}, {"q": "Xalqaro valyuta fondining bosh maqsadini ko‘rsating.", "o": ["Xalqaro valyuta tizimi barqarorligini ta’minlash", "Xalqaro valyuta bozorlari barqarorligini ta’minlash", "Xalqaro valyuta operatsiyalarini tartibga solish", "Xalqaro valyuta kreditlar bozorini rivojlantirish"], "a": 0}, {"q": "Valyuta bozori – bu......", "o": ["Xorijiy valyutaga nisbatan talab va taklif to‘qnash keladigan bozordir", "Xorijiy valyutaga nisbatan talab yuqori bo‘lgan bozordir", "Xorijiy valyutaga nisbatan taklif yuqori bo‘lgan bozordir", "Xorijiy valyutani sotadigan joydir"], "a": 0}, {"q": "Valyuta tizimi bu. . .", "o": ["Davlatlararo bitim yoki milliy qonunlarga muvofiq valyuta munosabatlarini tashkil qilish va boshqarish shakllarini o’z ichiga oladi.", "Milliy kompaniyalarning iqtisodiy barqarorligini oshirish natijasida jahon iqtisodiy tizimi ta’siriga tushishi hamda xalkaro operatsiyalar turi va ishlab chiqarish hajmini ko’paytirish hisoblanadi.", "Rivojlanayotgan mamlakatlardagi tijorat banklari faoliyatini tartibga solish hisoblanadi.", "Muayyan mamlakatning boshqa mamlakatlar bilan xalqaro mehnat taqsimoti, fan va ishlab chiqarishni ixtisoslashtirish hamda boshqa omillarga asoslangan ishlab chiqarish, savdo, siyosiy va boshqa xil munosabatlari hisoblanadi."], "a": 0}, {"q": "Sug’urta bozori bu-", "o": ["jamiyatning sug’urta himoyasiga bo’lgan ehtiyojlarini qondirish jarayonida sug’urta qoplamasini oldi-sotdisi bo’yicha yuzaga keladigan iqtisodiyot tizimi.", "Sug’urta shartnomalari tuziladigan joy.", "Sug’urta operatsiyalarini amalga oshirish jarayonida sug’urtalanuvchi va sug’urtalovchi uchrashadigan joy.", "To’g’ri javob berilmagan"], "a": 0}, {"q": "Sug‘urta tashkilotlari xarajatlariga quyidagilardan qaysi biri kirmaydi?", "o": ["kunlik birlamchi xarajatlar", "sug‘urta xizmatlarini ko‘rsatish bilan bog‘liq xarajatlar", "sug‘urta faoliyatini amalga oshirish bilan bog‘liq xarajatlar", "sug‘urta xizmatlarini sotish bilan bog‘liq xarajatlar"], "a": 0}, {"q": "Byudjet kreditlari kimlarga berilishi mumkin?", "o": ["davlat korxonalariga va xususiy yuridik shaxslarga", "faqat xususiy yuridik shaxslarga", "faqat davlat korxonalariga", "korxonalarga va jismoniy shaxslarga"], "a": 0}, {"q": "……………… - moliyaviy resurslarining harakati, shakllanishi, taqsimlanishi va xalqaro moliya bozori institutlari hamda xalqaro institutlar va tashkilotlar tomonidan ishlatilishiga asoslangan tarkibi bo‘yicha murakkab bo‘lgan munosabatlar tizimi.", "o": ["Xalqaro moliya munosabatlari", "Moliyaviy globallashuv", "Jahon xo‘jaligi", "Tashqi iqtisodiy faoliyat"], "a": 0}, {"q": "O‘zbekiston Respublikasi byudjet kodeksiga asosan Byudjetnomani Hisob palatasiga qaysi organ taqdim etadi?", "o": ["Vazirlar Mahkamasi", "Moliya Vazirligi", "Oliy Majlis qonunchilik palatasi", "Oliy majlis Senati"], "a": 0}, {"q": "Quyidagilardan qaysi biri mahalliy byudjetning biriktirilgan daromadlari tarkibiga kiradi?", "o": ["Mol-mulk solig’i", "Qo’shilgan qiymat solig’i", "Aktsiz solig’i", "Yuridik shaxslar daromad (foyda) solig’i"], "a": 0}, {"q": "Moliyaviy holatni baholash, moliyaviy resurslarni oshirish imkoniyatlarini, ulardan eng samarali foydalanish yo‘nalishlarini aniqlash – bu...........................", "o": ["Rejalashtirish", "Nazorat", "Tezkor (operativ) boshqarish", "Ijro etish"], "a": 0}]];
 
+// ── Barcha state o'zgaruvchilari birinchi e'lon qilinadi ──
+var curG = 0;
+var curSec = "test";
+var done = false;
+var sq = "";
+var timeLeft = 5400;
+var timerInt = null;
+var ans = [];
+var SG = []; // Shuffled groups
 
-// ===== STATE =====
-let currentQ = 0;
-let userAnswers = new Array(QUESTIONS.length).fill(null);
-let timerInterval = null;
-let timeLeft = 90 * 60;
-let testFinished = false;
-let shuffledQuestions = [];
-
-// ===== INIT =====
-function init() {
-  // Shuffle questions for randomness
-  shuffledQuestions = [...QUESTIONS].sort(() => Math.random() - 0.5);
-  
-  document.getElementById('statTotal').textContent = shuffledQuestions.length;
-  document.getElementById('totalQCount').textContent = shuffledQuestions.length;
-  
-  buildGrid();
-  renderQuestion(0);
-  startTimer();
-  updateStats();
-  buildAnswersPanel();
-}
-
-// ===== TIMER =====
-function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    updateTimer();
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      submitTest();
-    }
-  }, 1000);
-}
-
-function updateTimer() {
-  const m = Math.floor(timeLeft / 60);
-  const s = timeLeft % 60;
-  const disp = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  const el = document.getElementById('timerDisplay');
-  el.textContent = disp;
-  el.className = 'timer-box';
-  if (timeLeft <= 300) el.classList.add('danger');
-  else if (timeLeft <= 600) el.classList.add('warning');
-}
-
-// ===== GRID =====
-function buildGrid() {
-  const grid = document.getElementById('qGrid');
-  grid.innerHTML = '';
-  shuffledQuestions.forEach((_, i) => {
-    const btn = document.createElement('div');
-    btn.className = 'q-btn' + (i === 0 ? ' current' : '');
-    btn.textContent = i + 1;
-    btn.id = `qbtn-${i}`;
-    btn.onclick = () => { currentQ = i; renderQuestion(i); updateGrid(); };
-    grid.appendChild(btn);
-  });
-}
-
-function updateGrid() {
-  shuffledQuestions.forEach((_, i) => {
-    const btn = document.getElementById(`qbtn-${i}`);
-    if (!btn) return;
-    btn.className = 'q-btn';
-    if (userAnswers[i] !== null) btn.classList.add('answered');
-    if (i === currentQ) btn.classList.add('current');
-  });
-}
-
-// ===== RENDER QUESTION =====
-function renderQuestion(idx) {
-  const q = shuffledQuestions[idx];
-  document.getElementById('qHeaderNum').textContent = `Savol ${idx + 1}`;
-  document.getElementById('qBadge').textContent = `${idx + 1} / ${shuffledQuestions.length}`;
-  document.getElementById('qText').textContent = q.q;
-
-  const optDiv = document.getElementById('optionsDiv');
-  optDiv.innerHTML = '';
-  const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
-  q.o.forEach((opt, i) => {
-    const div = document.createElement('div');
-    div.className = 'option' + (userAnswers[idx] === i ? ' selected' : '');
-    div.innerHTML = `<div class="opt-letter">${letters[i]}</div><div class="opt-text">${opt}</div>`;
-    div.onclick = () => selectAnswer(i);
-    optDiv.appendChild(div);
-  });
-
-  document.getElementById('btnPrev').disabled = idx === 0;
-  document.getElementById('btnNext').textContent = idx === shuffledQuestions.length - 1 ? 'Yakunlash →' : 'Keyingi →';
-  if (idx === shuffledQuestions.length - 1) {
-    document.getElementById('btnNext').onclick = () => openModal();
-  } else {
-    document.getElementById('btnNext').onclick = () => navigate(1);
+function shuffle(q) {
+  var idx = q.o.map(function(_,i){ return i; });
+  for (var i = idx.length-1; i > 0; i--) {
+    var j = Math.floor(Math.random()*(i+1));
+    var t = idx[i]; idx[i]=idx[j]; idx[j]=t;
   }
+  return { q: q.q, o: idx.map(function(i){ return q.o[i]; }), a: idx.indexOf(q.a) };
 }
 
-// ===== SELECT ANSWER =====
-function selectAnswer(optIdx) {
-  userAnswers[currentQ] = optIdx;
-  document.querySelectorAll('.option').forEach((el, i) => {
-    el.className = 'option' + (i === optIdx ? ' selected' : '');
-    const letter = el.querySelector('.opt-letter');
-    if (i === optIdx) letter.style.background = 'var(--blue)'; 
-    else letter.style.background = '';
-  });
-  updateGrid();
-  updateStats();
+function initData() {
+  SG = ALL_GROUPS.map(function(g){ return g.map(shuffle); });
+  ans = ALL_GROUPS.map(function(g){ return new Array(g.length).fill(null); });
 }
 
-function clearAnswer() {
-  userAnswers[currentQ] = null;
-  document.querySelectorAll('.option').forEach(el => {
-    el.className = 'option';
-    el.querySelector('.opt-letter').style.background = '';
-  });
-  updateGrid();
-  updateStats();
-}
+// ── Event bindings ──
+document.getElementById("btnX").addEventListener("click", openModal);
+document.getElementById("btnEnd").addEventListener("click", openModal);
+document.getElementById("btnNo").addEventListener("click", closeModal);
+document.getElementById("btnYes").addEventListener("click", submitTest);
 
-// ===== NAVIGATE =====
-function navigate(dir) {
-  const next = currentQ + dir;
-  if (next < 0 || next >= shuffledQuestions.length) return;
-  currentQ = next;
-  renderQuestion(currentQ);
-  updateGrid();
-}
+window.addEventListener("scroll", function(){
+  var st = window.scrollY||document.documentElement.scrollTop;
+  var dh = document.documentElement.scrollHeight - window.innerHeight;
+  var el = document.getElementById("sfill");
+  if (el) el.style.width = (dh>0 ? st/dh*100 : 0)+"%";
+});
 
-// ===== STATS =====
-function updateStats() {
-  const answered = userAnswers.filter(a => a !== null).length;
-  document.getElementById('statAnswered').textContent = answered;
-  document.getElementById('statRemaining').textContent = shuffledQuestions.length - answered;
-}
-
-// ===== MODAL =====
 function openModal() {
-  const unanswered = userAnswers.filter(a => a === null).length;
-  document.getElementById('unansweredCount').textContent = unanswered;
-  if (unanswered === 0) {
-    document.getElementById('modalMsg').innerHTML = 'Barcha savollarga javob berdingiz. Testni yakunlashni tasdiqlaysizmi?';
-  } else {
-    document.getElementById('modalMsg').innerHTML = `Hali <strong>${unanswered}</strong> ta savolga javob bermagansiz. Testni yakunlamoqchimisiz?`;
-  }
-  document.getElementById('modalOverlay').classList.add('show');
+  var total=0, answered=0;
+  ans.forEach(function(g){ g.forEach(function(a){ total++; if(a!==null) answered++; }); });
+  var left = total-answered;
+  document.getElementById("mmsg").innerHTML = left>0
+    ? "Hali <strong>"+left+"</strong> ta savolga javob bermagansiz. Yakunlashni tasdiqlaysizmi?"
+    : "Barcha savollarga javob berdingiz. Yakunlashni tasdiqlaysizmi?";
+  document.getElementById("overlay").classList.add("show");
 }
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('show');
+function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+
+function submitTest(){
+  closeModal(); clearInterval(timerInt); done=true;
+  curSec="result"; syncTabs(); renderResult();
 }
 
-// ===== SUBMIT =====
-function submitTest() {
-  closeModal();
-  clearInterval(timerInterval);
-  testFinished = true;
-
-  let correct = 0;
-  shuffledQuestions.forEach((q, i) => {
-    if (userAnswers[i] === q.a) correct++;
+function buildTabs(){
+  var el = document.getElementById("tabs");
+  el.innerHTML = "";
+  ALL_GROUPS.forEach(function(g,i){
+    var d = document.createElement("div");
+    d.className = "tab"+(i===curG&&curSec==="test"?" active":"");
+    d.id = "t"+i;
+    d.textContent = (i+1)+"-guruh ("+g.length+")";
+    d.addEventListener("click", (function(x){ return function(){
+      curSec="test"; curG=x; render(); syncTabs(); window.scrollTo(0,0);
+    };})(i));
+    el.appendChild(d);
   });
-  const total = shuffledQuestions.length;
-  const wrong = userAnswers.filter((a, i) => a !== null && a !== shuffledQuestions[i].a).length;
-  const skipped = userAnswers.filter(a => a === null).length;
-  const score = Math.round((correct / total) * 100);
-
-  document.getElementById('scoreNum').textContent = score;
-  document.getElementById('resCorrect').textContent = correct;
-  document.getElementById('resWrong').textContent = wrong;
-  document.getElementById('resSkipped').textContent = skipped;
-
-  document.getElementById('testPage').style.display = 'none';
-  document.getElementById('resultPage').style.display = 'block';
-
-
-}
-
-// ===== RESTART =====
-function restartTest() {
-  testFinished = false;
-  userAnswers = new Array(QUESTIONS.length).fill(null);
-  timeLeft = 90 * 60;
-  currentQ = 0;
-  shuffledQuestions = [...QUESTIONS].sort(() => Math.random() - 0.5);
-  
-  document.getElementById('testPage').style.display = 'block';
-  document.getElementById('resultPage').style.display = 'none';
-  
-  
-  buildGrid();
-  renderQuestion(0);
-  startTimer();
-  updateStats();
-  showSection('test');
-}
-
-// ===== SECTION SWITCH =====
-function showSection(sec) {
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-
-  if (sec === 'test') {
-    document.getElementById('testSection').style.display = 'flex';
-    document.getElementById('answersSection').style.display = 'none';
-  } else {
-    document.getElementById('testSection').style.display = 'none';
-    document.getElementById('answersSection').style.display = 'block';
-  }
-}
-
-// ===== BUILD ANSWERS PANEL =====
-let allAnswerItems = [];
-
-function buildAnswersPanel() {
-  allAnswerItems = QUESTIONS.map((q, i) => {
-    const letters = ['A','B','C','D','E','F'];
-    return {
-      num: i + 1,
-      q: q.q,
-      ans: q.o[q.a],
-      letter: letters[q.a],
-      html: `
-        <div class="ans-item" data-idx="${i}" style="border:1px solid var(--grey-border);border-radius:5px;overflow:hidden;margin-bottom:8px">
-          <div style="background:#F5F7FA;padding:8px 12px;font-size:14px;font-weight:600;color:var(--blue-dark);border-bottom:1px solid var(--grey-border);line-height:1.4">
-            ${i+1}. ${q.q}
-          </div>
-          <div style="padding:9px 12px;background:var(--green-bg);border-left:3px solid var(--green);display:flex;align-items:flex-start;gap:6px">
-            <span style="font-weight:700;color:var(--green);font-size:14px;white-space:nowrap">${letters[q.a]})</span>
-            <span style="font-size:14px;color:var(--text);line-height:1.4">${q.o[q.a]}</span>
-          </div>
-        </div>
-      `
-    };
+  var a = document.createElement("div");
+  a.className = "tab atab"+(curSec==="answers"?" active":"");
+  a.id = "tans";
+  a.textContent = "Javoblar";
+  a.addEventListener("click", function(){
+    curSec="answers"; render(); syncTabs(); window.scrollTo(0,0);
   });
-  renderAnswers(allAnswerItems);
+  el.appendChild(a);
 }
 
-function renderAnswers(items) {
-  const cont = document.getElementById('answersContent');
-  const count = document.getElementById('searchCount');
-  if (!items.length) {
-    cont.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary)">Hech narsa topilmadi</div>';
-    count.textContent = '';
-    return;
+function syncTabs(){
+  ALL_GROUPS.forEach(function(_,i){
+    var t=document.getElementById("t"+i);
+    if(t) t.className="tab"+(i===curG&&curSec==="test"?" active":"");
+  });
+  var ta=document.getElementById("tans");
+  if(ta) ta.className="tab atab"+(curSec==="answers"?" active":"");
+}
+
+function render(){
+  if(curSec==="result"){ renderResult(); return; }
+  if(curSec==="answers"){ renderAnswers(); return; }
+  renderGroup(curG);
+}
+
+function renderGroup(gi){
+  var group = SG[gi];
+  var a = ans[gi];
+  var frag = document.createDocumentFragment();
+  group.forEach(function(q,qi){
+    var num = gi*30+qi+1;
+    var block = document.createElement("div");
+    block.className="qblock"; block.id="qb-"+gi+"-"+qi;
+    var qtxt = document.createElement("div");
+    qtxt.className="qtext"; qtxt.innerHTML=num+". "+q.q;
+    block.appendChild(qtxt);
+    q.o.forEach(function(opt,oi){
+      var sel = a[qi]===oi;
+      var row = document.createElement("div");
+      row.className="opt"+(sel?" sel":"");
+      var radio = document.createElement("div");
+      radio.className="radio";
+      if(sel) radio.style.borderColor="#1565C0";
+      var dot = document.createElement("div");
+      dot.className="rdot";
+      if(sel){ dot.style.background="#1565C0"; dot.style.transform="scale(1)"; }
+      radio.appendChild(dot);
+      var otxt = document.createElement("div");
+      otxt.className="otxt"; otxt.innerHTML=opt;
+      row.appendChild(radio); row.appendChild(otxt);
+      row.addEventListener("click",(function(g,q,o){ return function(){ pick(g,q,o); }; })(gi,qi,oi));
+      block.appendChild(row);
+    });
+    frag.appendChild(block);
+  });
+  var c=document.getElementById("content");
+  c.innerHTML=""; c.appendChild(frag);
+  document.getElementById("bottom").style.display="block";
+}
+
+function pick(gi,qi,oi){
+  if(done) return;
+  ans[gi][qi]=oi;
+  var block=document.getElementById("qb-"+gi+"-"+qi);
+  if(!block) return;
+  block.querySelectorAll(".opt").forEach(function(el,i){
+    var s=i===oi;
+    el.className="opt"+(s?" sel":"");
+    var rd=el.querySelector(".rdot"), ro=el.querySelector(".radio");
+    if(rd){ rd.style.background=s?"#1565C0":"transparent"; rd.style.transform=s?"scale(1)":"scale(0)"; }
+    if(ro) ro.style.borderColor=s?"#1565C0":"#bdbdbd";
+  });
+}
+
+function renderAnswers(){
+  var all=[];
+  ALL_GROUPS.forEach(function(g,gi){
+    g.forEach(function(q,qi){ all.push({n:gi*30+qi+1, q:q.q, a:q.o[q.a]}); });
+  });
+  var c=document.getElementById("content");
+  if(!document.getElementById("ans-wrap")){
+    c.innerHTML="";
+    var sbox=document.createElement("div"); sbox.className="sbox"; sbox.id="ans-wrap";
+    var inp=document.createElement("input"); inp.className="sinp"; inp.id="sinp";
+    inp.type="text"; inp.placeholder="Savol yoki javob boʻyicha qidiring...";
+    var cnt=document.createElement("span"); cnt.className="scnt"; cnt.id="scnt";
+    inp.addEventListener("input",function(){ sq=this.value; showFiltered(all); });
+    sbox.appendChild(inp); sbox.appendChild(cnt); c.appendChild(sbox);
+    var list=document.createElement("div"); list.id="alist"; c.appendChild(list);
   }
-  count.textContent = items.length + ' ta';
-  let html = `
-    <div style="background:white;border:1px solid var(--grey-border);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06)">
-      <div style="background:var(--blue-dark);color:white;padding:10px 16px;font-size:13px;font-weight:600">
-        📋 Barcha savollar va to'g'ri javoblar (${QUESTIONS.length} ta)
-      </div>
-      <div style="padding:12px 16px">
-  `;
-  items.forEach(item => { html += item.html; });
-  html += `</div></div>`;
-  cont.innerHTML = html;
+  showFiltered(all);
+  document.getElementById("bottom").style.display="none";
 }
 
-function filterAnswers() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  if (!q) { renderAnswers(allAnswerItems); return; }
-  const filtered = allAnswerItems.filter(item =>
-    item.q.toLowerCase().includes(q) || item.ans.toLowerCase().includes(q)
-  );
-  renderAnswers(filtered);
+function showFiltered(all){
+  var v=sq.toLowerCase();
+  var filtered=v?all.filter(function(x){ return x.q.toLowerCase().indexOf(v)>=0||x.a.toLowerCase().indexOf(v)>=0; }):all;
+  var cnt=document.getElementById("scnt");
+  if(cnt) cnt.textContent=filtered.length+" ta";
+  var list=document.getElementById("alist");
+  if(!list) return;
+  list.innerHTML="";
+  filtered.forEach(function(x){
+    var item=document.createElement("div"); item.className="aitm";
+    var aq=document.createElement("div"); aq.className="aq"; aq.innerHTML=x.n+". "+x.q;
+    var aa=document.createElement("div"); aa.className="aa";
+    aa.innerHTML="<span class='achk'>&#10004;</span><span class='atxt'>"+x.a+"</span>";
+    item.appendChild(aq); item.appendChild(aa); list.appendChild(item);
+  });
 }
 
+function renderResult(){
+  var correct=0,wrong=0,skip=0,total=0;
+  ALL_GROUPS.forEach(function(g,gi){
+    g.forEach(function(q,qi){
+      total++;
+      if(ans[gi][qi]===null) skip++;
+      else if(ans[gi][qi]===SG[gi][qi].a) correct++;
+      else wrong++;
+    });
+  });
+  var pct=Math.round(correct/total*100);
+  var c=document.getElementById("content");
+  c.innerHTML=
+    "<div class='rwrap'><div class='rcard'><div class='rhead'>"+
+    "<div class='rcirc'><div class='rpct'>"+pct+"%</div><div class='rlbl'>natija</div></div>"+
+    "<h2>Test yakunlandi</h2><p>Moliya fani bo&#39;yicha</p></div>"+
+    "<div class='rbody'><div class='rgrid'>"+
+    "<div class='ri'><div class='riv' style='color:#2E7D32'>"+correct+"</div><div class='ril'>To&#39;g&#39;ri</div></div>"+
+    "<div class='ri'><div class='riv' style='color:#C62828'>"+wrong+"</div><div class='ril'>Noto&#39;g&#39;ri</div></div>"+
+    "<div class='ri'><div class='riv' style='color:#888'>"+skip+"</div><div class='ril'>Javobsiz</div></div>"+
+    "</div><div class='rbtns'>"+
+    "<button class='rbtn' style='background:#1565C0;color:white' id='rba'>Javoblarni ko&#39;rish</button>"+
+    "<button class='rbtn' style='background:#f0f0f0;color:#555;border:1.5px solid #ddd' id='rbr'>Qayta boshlash</button>"+
+    "</div></div></div></div>";
+  document.getElementById("bottom").style.display="none";
+  document.getElementById("rba").addEventListener("click",function(){ curSec="answers"; syncTabs(); render(); window.scrollTo(0,0); });
+  document.getElementById("rbr").addEventListener("click",restart);
+}
 
-// Start
-init();
+function restart(){
+  done=false; sq=""; curG=0; curSec="test"; timeLeft=5400;
+  initData(); clearInterval(timerInt); startTimer(); buildTabs(); render(); window.scrollTo(0,0);
+}
+
+function startTimer(){
+  updateTimer();
+  timerInt=setInterval(function(){ timeLeft--; updateTimer(); if(timeLeft<=0){ clearInterval(timerInt); submitTest(); } },1000);
+}
+
+function updateTimer(){
+  var m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById("tnum").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  var bar=document.getElementById("timerbar");
+  bar.className="timerbar";
+  if(timeLeft<=300) bar.classList.add("danger");
+  else if(timeLeft<=600) bar.classList.add("warn");
+}
+
+// ── START ──
+initData();
+buildTabs();
+render();
+startTimer();
 </script>
 </body>
 </html>
